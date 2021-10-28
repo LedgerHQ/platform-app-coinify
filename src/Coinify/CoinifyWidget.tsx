@@ -19,10 +19,6 @@ import LedgerLiveApi, {
 } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency, Unit } from "@ledgerhq/live-app-sdk";
 
-// import FakeLink from "~/renderer/components/FakeLink";
-// import Reset from "~/renderer/icons/Reset";
-import Button from "./components/Button";
-
 const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
   const str = valueString.replace(/,/g, ".");
   const value = new BigNumber(str);
@@ -49,31 +45,12 @@ const COINIFY_CONFIG: { [key: string]: CoinifyConfig } = {
   },
 };
 
-const WidgetContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  height: 100%;
-`;
-
-// const IconContainer = styled.div`
-//   margin-right: 4px;
-// `;
-
 const CustomIframe = styled.iframe`
   border: none;
   width: 100%;
+  height: 100%;
   flex: 1;
   transition: opacity 200ms ease-out;
-`;
-
-const WidgetFooter = styled.div`
-  height: 45px;
-  border-top: 1px solid rgba(20, 37, 51, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #6490f1;
 `;
 
 type CoinifyWidgetConfig = {
@@ -93,10 +70,9 @@ type Props = {
   account: Account;
   currency: Currency;
   mode: string;
-  onReset?: () => void;
 };
 
-const CoinifyWidget = ({ account, currency, mode, onReset }: Props) => {
+const CoinifyWidget = ({ account, currency, mode }: Props) => {
   const api = useRef<LedgerLiveApi>();
 
   const env = useMemo(
@@ -421,23 +397,13 @@ const CoinifyWidget = ({ account, currency, mode, onReset }: Props) => {
   ]);
 
   return (
-    <WidgetContainer>
-      <CustomIframe
-        src={url}
-        ref={widgetRef}
-        style={{ opacity: widgetLoaded ? 1 : 0 }}
-        onLoad={() => setTimeout(() => setWidgetLoaded(true), 500)}
-        allow="camera"
-      />
-      {onReset ? (
-        <WidgetFooter>
-          {/* <IconContainer>
-            <Reset size={12} />
-          </IconContainer> */}
-          <Button onClick={onReset}>{"exchange.reset"}</Button>
-        </WidgetFooter>
-      ) : null}
-    </WidgetContainer>
+    <CustomIframe
+      src={url}
+      ref={widgetRef}
+      style={{ opacity: widgetLoaded ? 1 : 0 }}
+      onLoad={() => setTimeout(() => setWidgetLoaded(true), 500)}
+      allow="camera"
+    />
   );
 };
 
