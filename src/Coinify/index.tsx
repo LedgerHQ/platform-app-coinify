@@ -63,9 +63,9 @@ const Coinify = () => {
     const llapi = new LedgerLiveApi(new WindowMessageTransport());
 
     llapi.connect();
-    llapi
+    void llapi
       .listCurrencies()
-      .then((currencies) => setCurrencies(currencies))
+      .then((receivedCurrencies) => setCurrencies(receivedCurrencies))
       .then(() => {
         api.current = llapi;
       });
@@ -98,7 +98,7 @@ const Coinify = () => {
             ? SELECTABLE_CURRENCIES_BUY
             : SELECTABLE_CURRENCIES_SELL,
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error({ error });
         return undefined;
       });

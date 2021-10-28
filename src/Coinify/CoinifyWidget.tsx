@@ -1,5 +1,3 @@
-// @flow
-
 import React, {
   useState,
   useEffect,
@@ -234,7 +232,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   }, [coinifyConfig.host, account, mode]);
 
   const setTransactionId = useCallback(
-    (txId) => {
+    (txId: string) => {
       return new Promise((resolve) => {
         const onReply = (e: any) => {
           if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data)
@@ -359,7 +357,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
             }
 
             // FIXME: handle cancel / error
-            api.current
+            void api.current
               .receive(account.id)
               .then((verifiedAddress) => handleOnResultBuy(verifiedAddress));
 
