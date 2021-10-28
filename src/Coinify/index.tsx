@@ -20,6 +20,7 @@ const Content = styled.div`
   flex: auto;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   display: flex;
 `;
 
@@ -123,12 +124,17 @@ const Coinify = () => {
             mode={selectedMode}
           />
         ) : (
-          <Button onClick={selectAccount}>Select Account</Button>
+          <>
+            <div>
+              {`${selectedMode === "buy" ? "Buy" : "Sell"} crypto with Coinify`}
+            </div>
+            <Button onClick={selectAccount}>Select Account</Button>
+          </>
         )}
       </Content>
 
       <Footer>
-        <Button onClick={onReset}>{"exchange.reset"}</Button>
+        <Button onClick={onReset}>Reset</Button>
       </Footer>
     </Layout>
   );
