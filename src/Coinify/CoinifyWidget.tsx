@@ -83,8 +83,11 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   const tradeId = useRef(null);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   // FIXME: get colors from ui lib StyleProvider theme?
-  // const { colors } = useTheme();
+  const testTheme = useTheme();
+
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
+
+  console.log("TEST - ", { testTheme });
 
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {

@@ -112,6 +112,9 @@ const Coinify = () => {
 
   return (
     <Layout>
+      <Text ff="Inter|SemiBold" fontSize={7}>
+        {`${selectedMode === "buy" ? "Buy" : "Sell"} crypto with Coinify`}
+      </Text>
       <Tabs
         onTabChange={(index) => setSelectedMode(index === 0 ? "buy" : "sell")}
         tabs={[
@@ -138,9 +141,6 @@ const Coinify = () => {
           />
         ) : (
           <>
-            <Text>
-              {`${selectedMode === "buy" ? "Buy" : "Sell"} crypto with Coinify`}
-            </Text>
             <Button type="main" onClick={selectAccount}>
               Select Account
             </Button>
