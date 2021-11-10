@@ -5,16 +5,16 @@ import styled from "styled-components";
 import LedgerLiveApi, { WindowMessageTransport } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency } from "@ledgerhq/live-app-sdk";
 
-import Button from "../components/Button";
 import CoinifyWidget from "./CoinifyWidget";
+import { Button, Icon, Text } from "@ledgerhq/react-ui";
+
+import Tabs from "@ledgerhq/react-ui/components/tabs/Tabs";
 
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
 `;
-
-const Header = styled.div``;
 
 const Content = styled.div`
   flex: auto;
@@ -112,10 +112,23 @@ const Coinify = () => {
 
   return (
     <Layout>
-      <Header>
-        <Button onClick={() => setSelectedMode("buy")}>Buy</Button>
-        <Button onClick={() => setSelectedMode("sell")}>Sell</Button>
-      </Header>
+      <Tabs
+        onTabChange={(index) => setSelectedMode(index === 0 ? "buy" : "sell")}
+        tabs={[
+          {
+            index: 0,
+            title: "Buy",
+            // FIXME: tabs component does not have a 100% height (and I can't manage to make it so)
+            // Should Tabs's components be optionnal?
+            Component: <></>,
+          },
+          {
+            index: 1,
+            title: "Sell",
+            Component: <></>,
+          },
+        ]}
+      />
       <Content>
         {selectedAccount && selectedCurrency ? (
           <CoinifyWidget
@@ -125,17 +138,30 @@ const Coinify = () => {
           />
         ) : (
           <>
-            <div>
+            <Text>
               {`${selectedMode === "buy" ? "Buy" : "Sell"} crypto with Coinify`}
-            </div>
-            <Button onClick={selectAccount}>Select Account</Button>
+            </Text>
+            <Button type="main" onClick={selectAccount}>
+              Select Account
+            </Button>
           </>
         )}
       </Content>
-
-      <Footer>
-        <Button onClick={onReset}>Reset</Button>
-      </Footer>
+      {selectedAccount && selectedCurrency ? (
+        <Footer>
+          <Button
+            iconButton={true}
+            iconPosition="left"
+            outline={false}
+            Icon={() => <Icon name="Refresh" />}
+            onClick={onReset}
+          >
+            Reset
+          </Button>
+        </Footer>
+      ) : (
+        <></>
+      )}
     </Layout>
   );
 };

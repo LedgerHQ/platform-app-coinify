@@ -82,12 +82,13 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
 
   const tradeId = useRef(null);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
-  const { colors } = useTheme();
+  // FIXME: get colors from ui lib StyleProvider theme?
+  // const { colors } = useTheme();
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
 
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
-    primaryColor: colors.primary,
+    // primaryColor: colors.primary,
     partnerId: coinifyConfig.partnerId,
     cryptoCurrencies: currency ? currency.ticker : null,
     address: account.address,
