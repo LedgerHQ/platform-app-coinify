@@ -132,6 +132,7 @@ const Coinify = () => {
           },
         ]}
       />
+
       <Content>
         {selectedAccount && selectedCurrency ? (
           <CoinifyWidget

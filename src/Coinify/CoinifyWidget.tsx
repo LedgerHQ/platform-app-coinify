@@ -18,6 +18,7 @@ import LedgerLiveApi, {
   WindowMessageTransport,
 } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency, Unit } from "@ledgerhq/live-app-sdk";
+import { rgba } from "@ledgerhq/react-ui/styles";
 
 const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
   const str = valueString.replace(/,/g, ".");
@@ -82,16 +83,16 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
 
   const tradeId = useRef(null);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
-  // FIXME: get colors from ui lib StyleProvider theme?
-  const testTheme = useTheme();
+  const { colors } = useTheme();
 
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
 
-  console.log("TEST - ", { testTheme });
+  // the palette colors are hsla, we need to convert theme to rgba to pass theme to the widget. cf. https://developer.coinify.com/apidoc/trade/#trade-widget
+  const rgbaColor = rgba(colors.palette.primary.c10, 1);
 
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
-    // primaryColor: colors.primary,
+    primaryColor: rgbaColor,
     partnerId: coinifyConfig.partnerId,
     cryptoCurrencies: currency ? currency.ticker : null,
     address: account.address,
