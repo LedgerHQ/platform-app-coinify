@@ -307,8 +307,8 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
         provider: "coinify",
         fromAccountId: account.id,
         transaction: tx,
-        binaryPayload: coinifyContext.providerSig.payload,
-        signature: coinifyContext.providerSig.signature,
+        binaryPayload: Buffer.from(coinifyContext.providerSig.payload, "ascii"),
+        signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
         feesStrategy: FeesLevel.Medium,
         exchangeType: ExchangeType.SELL,
       })
