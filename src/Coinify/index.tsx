@@ -1,14 +1,14 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import styled from "styled-components";
 
-import LedgerLiveApi, { WindowMessageTransport } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency } from "@ledgerhq/live-app-sdk";
 
 import CoinifyWidget from "./CoinifyWidget";
 import { Button, Icon, Text } from "@ledgerhq/react-ui";
 
 import Tabs from "@ledgerhq/react-ui/components/tabs/Tabs";
+import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const Layout = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ const SELECTABLE_CURRENCIES_BUY = [
 const SELECTABLE_CURRENCIES_SELL = ["bitcoin"];
 
 const Coinify = () => {
-  const api = useRef<LedgerLiveApi>();
+  const api = useApi();
 
   const [selectedMode, setSelectedMode] = useState<Modes>("buy");
   const [currencies, setCurrencies] = useState<Currency[]>();
@@ -61,37 +61,20 @@ const Coinify = () => {
   const onReset = useCallback(() => setSelectedAccount(undefined), []);
 
   useEffect(() => {
-    const llapi = new LedgerLiveApi(new WindowMessageTransport());
-
-    llapi.connect();
-    llapi
-      .listCurrencies()
-      .then((currencies) => setCurrencies(currencies))
-      .then(() => {
-        api.current = llapi;
-      });
-
-    return () => {
-      api.current = undefined;
-      void llapi.disconnect();
-    };
-  }, []);
+    api.listCurrencies().then((currencies) => setCurrencies(currencies));
+  }, [api]);
 
   useEffect(() => {
     onReset();
   }, [selectedMode]);
 
   const selectAccount = async () => {
-    if (!api.current) {
-      return;
-    }
-
     if (!currencies) {
       console.warn("No currencies available");
       return;
     }
 
-    const account = await api.current
+    const account = await api
       .requestAccount({
         // FIXME: use a 'getSelectableCurrencies' function instead of ternarry
         currencies:

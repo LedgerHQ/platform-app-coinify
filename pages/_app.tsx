@@ -8,6 +8,7 @@ import { StyleProvider } from "@ledgerhq/react-ui";
 import { GlobalStyle } from "../styles/GlobalStyle";
 
 import "modern-normalize";
+import LedgerLiveSDKProvider from "../src/providers/LedgerLiveSDKProvider";
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const router = useRouter();
@@ -33,7 +34,9 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       {/* FIXME: remove local GlobalStyle? Should be handled by ui lib StyleProvider. PS: handle __next div 100% height */}
       <GlobalStyle />
       <StyleProvider selectedPalette={theme}>
-        <Component {...pageProps} />
+        <LedgerLiveSDKProvider>
+          <Component {...pageProps} />
+        </LedgerLiveSDKProvider>
       </StyleProvider>
     </>
   );
