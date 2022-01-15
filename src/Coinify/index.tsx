@@ -142,7 +142,7 @@ const Coinify = () => {
           />
         ) : (
           <>
-            <Button type="main" onClick={selectAccount}>
+            <Button variant="main" onClick={selectAccount}>
               Select Account
             </Button>
           </>
