@@ -1,12 +1,6 @@
 // @flow
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { BigNumber } from "bignumber.js";
 import styled, { useTheme } from "styled-components";
 import querystring from "querystring";
@@ -76,10 +70,7 @@ type Props = {
 const CoinifyWidget = ({ account, currency, mode }: Props) => {
   const api = useApi();
 
-  const env = useMemo(
-    () => new URLSearchParams(window.location.search).get("env") || "prod",
-    [window.location]
-  );
+  const env = new URLSearchParams(window.location.search).get("env") || "prod";
 
   const tradeId = useRef(null);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
@@ -271,7 +262,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
     [coinifyConfig]
   );
 
-  const initSellFlow = async () => {
+  const initSellFlow = useCallback(async () => {
     const nonce = await api
       .startExchange({
         exchangeType: ExchangeType.SELL,
@@ -307,7 +298,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
 
     // signedTx is not actually used by the widget
     return signedTx;
-  };
+  }, [account.id, api, currency.units, setTransactionId]);
 
   useEffect(() => {
     if (!account) return;
@@ -346,7 +337,8 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
             // FIXME: handle cancel / error
             api
               .receive(account.id)
-              .then((verifiedAddress) => handleOnResultBuy(verifiedAddress));
+              .then((verifiedAddress) => handleOnResultBuy(verifiedAddress))
+              .catch((error: unknown) => console.error(error));
 
             if (currency) {
               console.log(
@@ -377,8 +369,8 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
     handleOnResult,
     handleOnResultBuy,
     initSellFlow,
-    account,
     mode,
+    api,
   ]);
 
   return (

@@ -65,12 +65,15 @@ const Coinify = () => {
   const onReset = useCallback(() => setSelectedAccount(undefined), []);
 
   useEffect(() => {
-    api.listCurrencies().then((currencies) => setCurrencies(currencies));
+    api
+      .listCurrencies()
+      .then((returnedCurrencies) => setCurrencies(returnedCurrencies))
+      .catch((error: Error) => console.error(error));
   }, [api]);
 
   useEffect(() => {
     onReset();
-  }, [selectedMode]);
+  }, [selectedMode, onReset]);
 
   const selectAccount = async () => {
     if (!currencies) {
