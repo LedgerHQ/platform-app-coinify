@@ -14,7 +14,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const router = useRouter();
 
   // FIXME: make sure "theme" can only be ("dark" | "light" | undefined)
-  const { theme } = router.query;
+  const theme = router.query.theme as "dark" | "light" | undefined;
 
   return (
     <>
