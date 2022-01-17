@@ -1,12 +1,14 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import styled from "styled-components";
 
-import LedgerLiveApi, { WindowMessageTransport } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency } from "@ledgerhq/live-app-sdk";
 
-import Button from "../components/Button";
 import CoinifyWidget from "./CoinifyWidget";
+import { Button, Icon, Text } from "@ledgerhq/react-ui";
+
+import { Chip } from "@ledgerhq/react-ui/components/tabs";
+import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const Layout = styled.div`
   display: flex;
@@ -14,7 +16,9 @@ const Layout = styled.div`
   height: 100%;
 `;
 
-const Header = styled.div``;
+const Header = styled.div`
+  max-height: 5%;
+`;
 
 const Content = styled.div`
   flex: auto;
@@ -51,7 +55,7 @@ const SELECTABLE_CURRENCIES_BUY = [
 const SELECTABLE_CURRENCIES_SELL = ["bitcoin"];
 
 const Coinify = () => {
-  const api = useRef<LedgerLiveApi>();
+  const api = useApi();
 
   const [selectedMode, setSelectedMode] = useState<Modes>("buy");
   const [currencies, setCurrencies] = useState<Currency[]>();
@@ -61,37 +65,20 @@ const Coinify = () => {
   const onReset = useCallback(() => setSelectedAccount(undefined), []);
 
   useEffect(() => {
-    const llapi = new LedgerLiveApi(new WindowMessageTransport());
-
-    llapi.connect();
-    llapi
-      .listCurrencies()
-      .then((currencies) => setCurrencies(currencies))
-      .then(() => {
-        api.current = llapi;
-      });
-
-    return () => {
-      api.current = undefined;
-      void llapi.disconnect();
-    };
-  }, []);
+    api.listCurrencies().then((currencies) => setCurrencies(currencies));
+  }, [api]);
 
   useEffect(() => {
     onReset();
   }, [selectedMode]);
 
   const selectAccount = async () => {
-    if (!api.current) {
-      return;
-    }
-
     if (!currencies) {
       console.warn("No currencies available");
       return;
     }
 
-    const account = await api.current
+    const account = await api
       .requestAccount({
         // FIXME: use a 'getSelectableCurrencies' function instead of ternarry
         currencies:
@@ -113,9 +100,20 @@ const Coinify = () => {
   return (
     <Layout>
       <Header>
-        <Button onClick={() => setSelectedMode("buy")}>Buy</Button>
-        <Button onClick={() => setSelectedMode("sell")}>Sell</Button>
+        <Chip
+          initialActiveIndex={0}
+          onTabChange={(index) => setSelectedMode(index === 0 ? "buy" : "sell")}
+        >
+          <Text color="inherit" variant="small">
+            Buy
+          </Text>
+
+          <Text color="inherit" variant="small">
+            Sell
+          </Text>
+        </Chip>
       </Header>
+
       <Content>
         {selectedAccount && selectedCurrency ? (
           <CoinifyWidget
@@ -125,17 +123,27 @@ const Coinify = () => {
           />
         ) : (
           <>
-            <div>
-              {`${selectedMode === "buy" ? "Buy" : "Sell"} crypto with Coinify`}
-            </div>
-            <Button onClick={selectAccount}>Select Account</Button>
+            <Button variant="main" onClick={selectAccount}>
+              Select Account
+            </Button>
           </>
         )}
       </Content>
-
-      <Footer>
-        <Button onClick={onReset}>Reset</Button>
-      </Footer>
+      {selectedAccount && selectedCurrency ? (
+        <Footer>
+          <Button
+            iconButton={true}
+            iconPosition="left"
+            outline={false}
+            Icon={() => <Icon name="Refresh" />}
+            onClick={onReset}
+          >
+            Reset
+          </Button>
+        </Footer>
+      ) : (
+        <></>
+      )}
     </Layout>
   );
 };

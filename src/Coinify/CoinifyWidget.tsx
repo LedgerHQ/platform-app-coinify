@@ -10,14 +10,15 @@ import React, {
 import { BigNumber } from "bignumber.js";
 import styled, { useTheme } from "styled-components";
 import querystring from "querystring";
-import LedgerLiveApi, {
+import {
   BitcoinTransaction,
   ExchangeType,
   FAMILIES,
   FeesLevel,
-  WindowMessageTransport,
 } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency, Unit } from "@ledgerhq/live-app-sdk";
+import { rgba } from "@ledgerhq/react-ui/styles";
+import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
   const str = valueString.replace(/,/g, ".");
@@ -73,7 +74,7 @@ type Props = {
 };
 
 const CoinifyWidget = ({ account, currency, mode }: Props) => {
-  const api = useRef<LedgerLiveApi>();
+  const api = useApi();
 
   const env = useMemo(
     () => new URLSearchParams(window.location.search).get("env") || "prod",
@@ -83,11 +84,16 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   const tradeId = useRef(null);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
   const { colors } = useTheme();
+
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
+
+  // the palette colors are hsla, we need to convert theme to rgba to pass theme to the widget. cf. https://developer.coinify.com/apidoc/trade/#trade-widget
+  // FIXME: need to find the appropriate color for the CTA button here
+  const rgbaColor = rgba(colors.constant.purple, 1);
 
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
-    primaryColor: colors.primary,
+    primaryColor: rgbaColor,
     partnerId: coinifyConfig.partnerId,
     cryptoCurrencies: currency ? currency.ticker : null,
     address: account.address,
@@ -122,18 +128,6 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
       console.log("Coinify Start History Widget");
     }
   }, [account, currency, mode]);
-
-  useEffect(() => {
-    const llapi = new LedgerLiveApi(new WindowMessageTransport());
-
-    llapi.connect();
-    api.current = llapi;
-
-    return () => {
-      api.current = undefined;
-      void llapi.disconnect();
-    };
-  }, []);
 
   const url = `${coinifyConfig.url}?${querystring.stringify(widgetConfig)}`;
 
@@ -278,12 +272,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   );
 
   const initSellFlow = async () => {
-    if (!api.current) {
-      console.error("NO LL-API");
-      throw new Error("NO LL-API");
-    }
-
-    const nonce = await api.current
+    const nonce = await api
       .startExchange({
         exchangeType: ExchangeType.SELL,
       })
@@ -302,7 +291,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
       recipient: coinifyContext.transferIn.details.account,
     };
 
-    const signedTx = await api.current
+    const signedTx = await api
       .completeExchange({
         provider: "coinify",
         fromAccountId: account.id,
@@ -353,13 +342,9 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
         case "trade.receive-account-changed":
           if (account && context.address === account.address) {
             // FIXME: VERIFY ADDRESS
-            if (!api.current) {
-              console.error("NO LL-API");
-              return;
-            }
 
             // FIXME: handle cancel / error
-            api.current
+            api
               .receive(account.id)
               .then((verifiedAddress) => handleOnResultBuy(verifiedAddress));
 

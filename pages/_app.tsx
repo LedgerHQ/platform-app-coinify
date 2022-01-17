@@ -1,34 +1,20 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import { AppProps } from "next/app";
 import Head from "next/head";
 
-import { ThemeProvider } from "styled-components";
+import { StyleProvider } from "@ledgerhq/react-ui";
 
-import defaultTheme from "../styles/theme";
 import { GlobalStyle } from "../styles/GlobalStyle";
 
 import "modern-normalize";
+import LedgerLiveSDKProvider from "../src/providers/LedgerLiveSDKProvider";
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const router = useRouter();
 
-  const { backgroundColor, textColor } = router.query;
-
-  const theme = useMemo(
-    () => ({
-      colors: {
-        ...defaultTheme.colors,
-        background:
-          typeof backgroundColor === "string"
-            ? backgroundColor
-            : defaultTheme.colors.background,
-        text:
-          typeof textColor === "string" ? textColor : defaultTheme.colors.text,
-      },
-    }),
-    [backgroundColor, textColor]
-  );
+  // FIXME: make sure "theme" can only be ("dark" | "light" | undefined)
+  const { theme } = router.query;
 
   return (
     <>
@@ -38,16 +24,20 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
         />
         <title>Ledger Platform Apps</title>
+        {/* FIXME: fonts should be useless here, already handled by ui lib */}
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
       </Head>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Component {...pageProps} />
-      </ThemeProvider>
+      {/* FIXME: remove local GlobalStyle? Should be handled by ui lib StyleProvider. PS: handle __next div 100% height */}
+      <GlobalStyle />
+      <StyleProvider selectedPalette={theme}>
+        <LedgerLiveSDKProvider>
+          <Component {...pageProps} />
+        </LedgerLiveSDKProvider>
+      </StyleProvider>
     </>
   );
 }
