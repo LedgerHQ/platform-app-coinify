@@ -7,13 +7,17 @@ import type { Account, Currency } from "@ledgerhq/live-app-sdk";
 import CoinifyWidget from "./CoinifyWidget";
 import { Button, Icon, Text } from "@ledgerhq/react-ui";
 
-import Tabs from "@ledgerhq/react-ui/components/tabs/Tabs";
+import { Chip } from "@ledgerhq/react-ui/components/tabs";
 import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`;
+
+const Header = styled.div`
+  max-height: 5%;
 `;
 
 const Content = styled.div`
@@ -95,26 +99,20 @@ const Coinify = () => {
 
   return (
     <Layout>
-      <Text ff="Inter|SemiBold" fontSize={7}>
-        {`${selectedMode === "buy" ? "Buy" : "Sell"} crypto with Coinify`}
-      </Text>
-      <Tabs
-        onTabChange={(index) => setSelectedMode(index === 0 ? "buy" : "sell")}
-        tabs={[
-          {
-            index: 0,
-            title: "Buy",
-            // FIXME: tabs component does not have a 100% height (and I can't manage to make it so)
-            // Should Tabs's components be optionnal?
-            Component: <></>,
-          },
-          {
-            index: 1,
-            title: "Sell",
-            Component: <></>,
-          },
-        ]}
-      />
+      <Header>
+        <Chip
+          initialActiveIndex={0}
+          onTabChange={(index) => setSelectedMode(index === 0 ? "buy" : "sell")}
+        >
+          <Text color="inherit" variant="small">
+            Buy
+          </Text>
+
+          <Text color="inherit" variant="small">
+            Sell
+          </Text>
+        </Chip>
+      </Header>
 
       <Content>
         {selectedAccount && selectedCurrency ? (

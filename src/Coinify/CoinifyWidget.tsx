@@ -88,7 +88,8 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
 
   // the palette colors are hsla, we need to convert theme to rgba to pass theme to the widget. cf. https://developer.coinify.com/apidoc/trade/#trade-widget
-  const rgbaColor = rgba(colors.palette.primary.c10, 1);
+  // FIXME: need to find the appropriate color for the CTA button here
+  const rgbaColor = rgba(colors.constant.purple, 1);
 
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
