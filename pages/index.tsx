@@ -43,6 +43,13 @@ const Page = () => {
 
   const { cryptoCurrencyId, accountId, mode } = router.query as QueryParams;
 
+  console.log({
+    cryptoCurrencyId,
+    accountId,
+    mode,
+    data: state.data,
+  });
+
   if (state.data) {
     return (
       <Coinify
