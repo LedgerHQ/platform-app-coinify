@@ -34,9 +34,9 @@ const Footer = styled.div`
   justify-content: center;
 `;
 
-type Modes = "buy" | "sell";
+type Modes = "onRamp" | "offRamp";
 
-const SELECTABLE_CURRENCIES_BUY = [
+const SELECTABLE_CURRENCIES_ONRAMP = [
   "bitcoin",
   "ethereum",
   "polkadot",
@@ -52,24 +52,43 @@ const SELECTABLE_CURRENCIES_BUY = [
   "ethereum/erc20/link_chainlink",
 ];
 
-const SELECTABLE_CURRENCIES_SELL = ["bitcoin"];
+const SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
 
-const Coinify = () => {
+type CoinifyProps = {
+  defaultCryptoCurrencyId?: string;
+  defaultAccountId?: string;
+  defaultMode?: Modes;
+  currencies: Currency[];
+  accounts: Account[];
+};
+
+const Coinify = ({
+  defaultCryptoCurrencyId,
+  defaultAccountId,
+  defaultMode,
+  currencies,
+  accounts,
+}: CoinifyProps) => {
   const api = useApi();
 
-  const [selectedMode, setSelectedMode] = useState<Modes>("buy");
-  const [currencies, setCurrencies] = useState<Currency[]>();
-  const [selectedAccount, setSelectedAccount] = useState<Account>();
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>();
+  const [selectedMode, setSelectedMode] = useState<Modes>(
+    defaultMode || "onRamp"
+  );
+
+  const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(
+    defaultAccountId
+      ? accounts.find((account) => account.id === defaultAccountId)
+      : undefined
+  );
+  const [selectedCurrency, setSelectedCurrency] = useState<
+    Currency | undefined
+  >(
+    defaultCryptoCurrencyId
+      ? currencies.find((currency) => currency.id === defaultCryptoCurrencyId)
+      : undefined
+  );
 
   const onReset = useCallback(() => setSelectedAccount(undefined), []);
-
-  useEffect(() => {
-    api
-      .listCurrencies()
-      .then((returnedCurrencies) => setCurrencies(returnedCurrencies))
-      .catch((error: Error) => console.error(error));
-  }, [api]);
 
   useEffect(() => {
     onReset();
@@ -85,9 +104,9 @@ const Coinify = () => {
       .requestAccount({
         // FIXME: use a 'getSelectableCurrencies' function instead of ternarry
         currencies:
-          selectedMode === "buy"
-            ? SELECTABLE_CURRENCIES_BUY
-            : SELECTABLE_CURRENCIES_SELL,
+          selectedMode === "onRamp"
+            ? SELECTABLE_CURRENCIES_ONRAMP
+            : SELECTABLE_CURRENCIES_OFFRAMP,
       })
       .catch((error) => {
         console.error({ error });
@@ -102,20 +121,24 @@ const Coinify = () => {
 
   return (
     <Layout>
-      <Header>
-        <Chip
-          initialActiveIndex={0}
-          onTabChange={(index) => setSelectedMode(index === 0 ? "buy" : "sell")}
-        >
-          <Text color="inherit" variant="small">
-            Buy
-          </Text>
+      {defaultMode ? (
+        <Header>
+          <Chip
+            initialActiveIndex={0}
+            onTabChange={(index) =>
+              setSelectedMode(index === 0 ? "onRamp" : "offRamp")
+            }
+          >
+            <Text color="inherit" variant="small">
+              Buy
+            </Text>
 
-          <Text color="inherit" variant="small">
-            Sell
-          </Text>
-        </Chip>
-      </Header>
+            <Text color="inherit" variant="small">
+              Sell
+            </Text>
+          </Chip>
+        </Header>
+      ) : null}
 
       <Content>
         {selectedAccount && selectedCurrency ? (

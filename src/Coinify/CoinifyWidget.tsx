@@ -64,7 +64,7 @@ type CoinifyWidgetConfig = {
 type Props = {
   account: Account;
   currency: Currency;
-  mode: string;
+  mode: "onRamp" | "offRamp" | "history";
 };
 
 const CoinifyWidget = ({ account, currency, mode }: Props) => {
@@ -92,30 +92,34 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   };
 
   // FIXME: could use switch case?
-  if (mode === "buy") {
+  if (mode === "onRamp") {
     widgetConfig.transferOutMedia = "blockchain";
     widgetConfig.confirmMessages = true;
   }
 
-  if (mode === "sell") {
+  if (mode === "offRamp") {
     widgetConfig.transferInMedia = "blockchain";
     widgetConfig.confirmMessages = true;
   }
 
-  if (mode === "trade-history") {
+  if (mode === "history") {
     widgetConfig.transferOutMedia = "";
     widgetConfig.transferInMedia = "";
   }
 
   useEffect(() => {
     if (!currency) return;
-    if (mode === "buy" && account) {
-      console.log(`Coinify Start Buy Widget | currencyName: ${currency.name}`);
+    if (mode === "onRamp" && account) {
+      console.log(
+        `Coinify Start OnRamp Widget | currencyName: ${currency.name}`
+      );
     }
-    if (mode === "sell" && account) {
-      console.log(`Coinify Start Sell Widget | currencyName: ${currency.name}`);
+    if (mode === "offRamp" && account) {
+      console.log(
+        `Coinify Start OffRamp Widget | currencyName: ${currency.name}`
+      );
     }
-    if (mode === "trade-history") {
+    if (mode === "history") {
       console.log("Coinify Start History Widget");
     }
   }, [account, currency, mode]);
@@ -124,7 +128,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
 
   const handleOnResultBuy = useCallback(
     (address: string) => {
-      if (!widgetRef?.current?.contentWindow || !account || mode !== "buy") {
+      if (!widgetRef?.current?.contentWindow || !account || mode !== "onRamp") {
         return;
       }
 
@@ -140,7 +144,9 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
         coinifyConfig.host
       );
       if (currency) {
-        console.log(`Coinify Confirm Buy End | currencyName: ${currency.name}`);
+        console.log(
+          `Coinify Confirm OnRamp End | currencyName: ${currency.name}`
+        );
       }
     },
     [coinifyConfig.host, currency, account, mode]
@@ -148,7 +154,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
 
   const handleOnResult = useCallback(() => {
     if (widgetRef?.current?.contentWindow) {
-      if (account && mode === "buy") {
+      if (account && mode === "onRamp") {
         widgetRef.current.contentWindow.postMessage(
           {
             type: "event",
@@ -166,7 +172,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
           );
         }
       }
-      if (tradeId.current && mode === "sell") {
+      if (tradeId.current && mode === "offRamp") {
         widgetRef.current.contentWindow.postMessage(
           {
             type: "event",
@@ -190,7 +196,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
 
   const handleOnCancel = useCallback(() => {
     if (widgetRef?.current?.contentWindow) {
-      if (mode === "buy" && account) {
+      if (mode === "onRamp" && account) {
         widgetRef.current.contentWindow.postMessage(
           {
             type: "event",
@@ -203,7 +209,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
           coinifyConfig.host
         );
       }
-      if (mode === "sell") {
+      if (mode === "offRamp") {
         widgetRef.current.contentWindow.postMessage(
           {
             type: "event",
@@ -311,7 +317,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
       switch (event) {
         case "trade.trade-created":
           tradeId.current = context.id;
-          if (mode === "buy" && widgetRef.current?.contentWindow) {
+          if (mode === "onRamp" && widgetRef.current?.contentWindow) {
             widgetRef.current.contentWindow.postMessage(
               {
                 type: "event",
@@ -326,7 +332,7 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
           }
           break;
         case "trade.trade-prepared":
-          if (mode === "sell" && currency) {
+          if (mode === "offRamp" && currency) {
             initSellFlow().then(handleOnResult).catch(handleOnCancel);
           }
           break;
