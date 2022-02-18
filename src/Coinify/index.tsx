@@ -121,7 +121,7 @@ const Coinify = ({
 
   return (
     <Layout>
-      {defaultMode ? (
+      {!defaultMode ? (
         <Header>
           <Chip
             initialActiveIndex={0}
