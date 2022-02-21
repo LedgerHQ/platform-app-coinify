@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 
 import styled from "styled-components";
 
@@ -90,9 +90,16 @@ const Coinify = ({
 
   const onReset = useCallback(() => setSelectedAccount(undefined), []);
 
+  const mounted = useRef(false);
   useEffect(() => {
-    onReset();
+    if (mounted.current) {
+      onReset();
+    }
   }, [selectedMode, onReset]);
+
+  useEffect(() => {
+    mounted.current = true;
+  }, []);
 
   console.log({
     defaultCryptoCurrencyId,
