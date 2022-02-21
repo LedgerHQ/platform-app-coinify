@@ -94,6 +94,16 @@ const Coinify = ({
     onReset();
   }, [selectedMode, onReset]);
 
+  console.log({
+    defaultCryptoCurrencyId,
+    defaultAccountId,
+    defaultMode,
+    currencies,
+    accounts,
+    selectedAccount,
+    selectedCurrency,
+  });
+
   const selectAccount = async () => {
     if (!currencies) {
       console.warn("No currencies available");
