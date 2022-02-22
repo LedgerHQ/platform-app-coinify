@@ -59,6 +59,8 @@ type CoinifyWidgetConfig = {
   transferOutMedia?: string;
   transferInMedia?: string;
   confirmMessages?: boolean;
+  buyAmount?: number;
+  sellAmount?: number;
 };
 
 type Props = {
@@ -69,7 +71,13 @@ type Props = {
   amountCurrency?: "fiat" | "crypto";
 };
 
-const CoinifyWidget = ({ account, currency, mode }: Props) => {
+const CoinifyWidget = ({
+  account,
+  currency,
+  mode,
+  amount,
+  amountCurrency,
+}: Props) => {
   const api = useApi();
 
   const env = new URLSearchParams(window.location.search).get("env") || "prod";
@@ -107,6 +115,11 @@ const CoinifyWidget = ({ account, currency, mode }: Props) => {
   if (mode === "history") {
     widgetConfig.transferOutMedia = "";
     widgetConfig.transferInMedia = "";
+  }
+
+  if (amountCurrency === "fiat" && amount) {
+    widgetConfig.buyAmount = amount;
+    widgetConfig.sellAmount = amount;
   }
 
   useEffect(() => {
