@@ -9,6 +9,8 @@ type QueryParams = {
   cryptoCurrencyId?: string;
   accountId?: string;
   mode?: "onRamp" | "offRamp";
+  amount?: number;
+  amountCurrency?: "fiat" | "crypto";
 };
 
 type PageState = {
@@ -41,7 +43,8 @@ const Page = () => {
       });
   }, []);
 
-  const { cryptoCurrencyId, accountId, mode } = router.query as QueryParams;
+  const { cryptoCurrencyId, accountId, mode, amount, amountCurrency } =
+    router.query as QueryParams;
 
   if (state.data) {
     return (
@@ -49,6 +52,8 @@ const Page = () => {
         defaultCryptoCurrencyId={cryptoCurrencyId}
         defaultAccountId={accountId}
         defaultMode={mode}
+        defaultAmount={amount}
+        defaultAmountCurrency={amountCurrency}
         accounts={state.data.accounts}
         currencies={state.data.currencies}
       />

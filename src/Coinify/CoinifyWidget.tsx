@@ -65,6 +65,8 @@ type Props = {
   account: Account;
   currency: Currency;
   mode: "onRamp" | "offRamp" | "history";
+  amount?: number;
+  amountCurrency?: "fiat" | "crypto";
 };
 
 const CoinifyWidget = ({ account, currency, mode }: Props) => {
