@@ -105,21 +105,24 @@ const CoinifyWidget = ({
   if (mode === "onRamp") {
     widgetConfig.transferOutMedia = "blockchain";
     widgetConfig.confirmMessages = true;
+
+    if (amountCurrency === "fiat" && amount) {
+      widgetConfig.buyAmount = amount;
+    }
   }
 
   if (mode === "offRamp") {
     widgetConfig.transferInMedia = "blockchain";
     widgetConfig.confirmMessages = true;
+
+    if (amountCurrency === "crypto" && amount) {
+      widgetConfig.sellAmount = amount;
+    }
   }
 
   if (mode === "history") {
     widgetConfig.transferOutMedia = "";
     widgetConfig.transferInMedia = "";
-  }
-
-  if (amountCurrency === "fiat" && amount) {
-    widgetConfig.buyAmount = amount;
-    widgetConfig.sellAmount = amount;
   }
 
   useEffect(() => {
