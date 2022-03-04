@@ -52,6 +52,7 @@ type CoinifyWidgetConfig = {
   primaryColor?: string;
   partnerId: string;
   cryptoCurrencies?: string | null;
+  defaultFiatCurrency?: string;
   address?: string | null;
   targetPage: string;
   addressConfirmation?: boolean;
@@ -66,6 +67,7 @@ type CoinifyWidgetConfig = {
 type Props = {
   account: Account;
   currency: Currency;
+  fiatCurrencyId?: string;
   mode: "onRamp" | "offRamp" | "history";
   amount?: number;
   amountCurrency?: "fiat" | "crypto";
@@ -74,6 +76,7 @@ type Props = {
 const CoinifyWidget = ({
   account,
   currency,
+  fiatCurrencyId,
   mode,
   amount,
   amountCurrency,
@@ -97,6 +100,7 @@ const CoinifyWidget = ({
     primaryColor: rgbaColor,
     partnerId: coinifyConfig.partnerId,
     cryptoCurrencies: currency ? currency.ticker : null,
+    defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : undefined,
     address: account.address,
     targetPage: mode,
   };

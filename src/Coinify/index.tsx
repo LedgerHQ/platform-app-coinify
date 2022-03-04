@@ -56,6 +56,7 @@ const SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
 
 type CoinifyProps = {
   defaultCryptoCurrencyId?: string;
+  defaultFiatCurrencyId?: string;
   defaultAccountId?: string;
   defaultMode?: Modes;
   defaultAmount?: number;
@@ -67,6 +68,7 @@ type CoinifyProps = {
 
 const Coinify = ({
   defaultCryptoCurrencyId,
+  defaultFiatCurrencyId,
   defaultAccountId,
   defaultMode,
   defaultAmount,
@@ -109,6 +111,7 @@ const Coinify = ({
   console.log("Widget started with settings: ", {
     defaultCryptoCurrencyId,
     defaultAccountId,
+    defaultFiatCurrencyId,
     defaultMode,
     defaultAmount,
     defaultAmountCurrency,
@@ -169,6 +172,7 @@ const Coinify = ({
           <CoinifyWidget
             account={selectedAccount}
             currency={selectedCurrency}
+            fiatCurrencyId={defaultFiatCurrencyId}
             mode={selectedMode}
             amount={defaultAmount}
             amountCurrency={defaultAmountCurrency}
@@ -190,7 +194,7 @@ const Coinify = ({
             Icon={() => <Icon name="Refresh" />}
             onClick={onReset}
           >
-            <Text>Reset</Text>
+            Reset
           </Button>
         </Footer>
       ) : (

@@ -6,11 +6,14 @@ import Coinify from "../src/Coinify";
 import { Account, Currency } from "@ledgerhq/live-app-sdk";
 
 type QueryParams = {
-  cryptoCurrencyId?: string;
-  accountId?: string;
-  mode?: "onRamp" | "offRamp";
-  amount?: number;
-  amountCurrency?: "fiat" | "crypto";
+  fiatCurrencyId?: string; // Fiat currency selected by the user
+  cryptoCurrencyId?: string; // Crypto currency selected by the user
+  accountId?: string; // Ledger Live crypto account id selected by the user
+  mode?: "onRamp" | "offRamp"; // Are we onRamping or offRamping ? (buy / sell crypto)
+  amount?: number; // amount of crypto / fiat to buy or sell
+  amountCurrency?: "fiat" | "crypto"; // is the amount in fiat or in crypto ?
+  theme?: "light" | "dark"; // theme currently used in Ledger Live
+  lang?: string; // fr, en, es...
 };
 
 type PageState = {
@@ -43,13 +46,20 @@ const Page = () => {
       });
   }, []);
 
-  const { cryptoCurrencyId, accountId, mode, amount, amountCurrency } =
-    router.query as QueryParams;
+  const {
+    cryptoCurrencyId,
+    fiatCurrencyId,
+    accountId,
+    mode,
+    amount,
+    amountCurrency,
+  } = router.query as QueryParams;
 
   if (state.data) {
     return (
       <Coinify
         defaultCryptoCurrencyId={cryptoCurrencyId}
+        defaultFiatCurrencyId={fiatCurrencyId}
         defaultAccountId={accountId}
         defaultMode={mode}
         defaultAmount={amount}
