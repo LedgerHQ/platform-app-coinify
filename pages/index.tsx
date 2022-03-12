@@ -6,14 +6,15 @@ import Coinify from "../src/Coinify";
 import { Account, Currency } from "@ledgerhq/live-app-sdk";
 
 type QueryParams = {
-  fiatCurrencyId?: string; // Fiat currency selected by the user
-  cryptoCurrencyId?: string; // Crypto currency selected by the user
-  accountId?: string; // Ledger Live crypto account id selected by the user
-  mode?: "onRamp" | "offRamp"; // Are we onRamping or offRamping ? (buy / sell crypto)
-  amount?: number; // amount of crypto / fiat to buy or sell
-  amountCurrency?: "fiat" | "crypto"; // is the amount in fiat or in crypto ?
-  theme?: "light" | "dark"; // theme currently used in Ledger Live
-  lang?: string; // fr, en, es...
+  accountId?: string;
+  accountAddress?: string;
+  language?: string;
+  fiatCurrencyId?: string;
+  cryptoCurrencyId?: string;
+  primaryColor?: string;
+  type?: "onRamp" | "offRamp";
+  fiatAmount?: string;
+  cryptoAmount?: string;
 };
 
 type PageState = {
@@ -47,12 +48,14 @@ const Page = () => {
   }, []);
 
   const {
-    cryptoCurrencyId,
-    fiatCurrencyId,
     accountId,
-    mode,
-    amount,
-    amountCurrency,
+    language,
+    fiatCurrencyId,
+    cryptoCurrencyId,
+    primaryColor,
+    type,
+    fiatAmount,
+    cryptoAmount,
   } = router.query as QueryParams;
 
   if (state.data) {
@@ -61,9 +64,11 @@ const Page = () => {
         defaultCryptoCurrencyId={cryptoCurrencyId}
         defaultFiatCurrencyId={fiatCurrencyId}
         defaultAccountId={accountId}
-        defaultMode={mode}
-        defaultAmount={amount}
-        defaultAmountCurrency={amountCurrency}
+        defaultMode={type}
+        defaultCryptoAmount={cryptoAmount}
+        defaultFiatAmount={fiatAmount}
+        language={language}
+        primaryColor={primaryColor}
         accounts={state.data.accounts}
         currencies={state.data.currencies}
       />

@@ -59,9 +59,10 @@ type CoinifyProps = {
   defaultFiatCurrencyId?: string;
   defaultAccountId?: string;
   defaultMode?: Modes;
-  defaultAmount?: number;
-  defaultAmountCurrency?: "fiat" | "crypto";
-
+  defaultCryptoAmount?: string;
+  defaultFiatAmount?: string;
+  language?: string;
+  primaryColor?: string;
   currencies: Currency[];
   accounts: Account[];
 };
@@ -71,10 +72,12 @@ const Coinify = ({
   defaultFiatCurrencyId,
   defaultAccountId,
   defaultMode,
-  defaultAmount,
-  defaultAmountCurrency,
+  defaultCryptoAmount,
+  defaultFiatAmount,
   currencies,
   accounts,
+  language,
+  primaryColor,
 }: CoinifyProps) => {
   const api = useApi();
 
@@ -113,8 +116,8 @@ const Coinify = ({
     defaultAccountId,
     defaultFiatCurrencyId,
     defaultMode,
-    defaultAmount,
-    defaultAmountCurrency,
+    defaultCryptoAmount,
+    defaultFiatAmount,
     currencies,
     accounts,
     selectedAccount,
@@ -174,8 +177,10 @@ const Coinify = ({
             currency={selectedCurrency}
             fiatCurrencyId={defaultFiatCurrencyId}
             mode={selectedMode}
-            amount={defaultAmount}
-            amountCurrency={defaultAmountCurrency}
+            fiatAmount={defaultFiatAmount}
+            cryptoAmount={defaultCryptoAmount}
+            language={language}
+            primaryColor={primaryColor}
           />
         ) : (
           <>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { BigNumber } from "bignumber.js";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import querystring from "querystring";
 import {
   BitcoinTransaction,
@@ -11,7 +11,6 @@ import {
   FeesLevel,
 } from "@ledgerhq/live-app-sdk";
 import type { Account, Currency, Unit } from "@ledgerhq/live-app-sdk";
-import { rgba } from "@ledgerhq/react-ui/styles";
 import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
@@ -60,8 +59,8 @@ type CoinifyWidgetConfig = {
   transferOutMedia?: string;
   transferInMedia?: string;
   confirmMessages?: boolean;
-  buyAmount?: number;
-  sellAmount?: number;
+  buyAmount?: string;
+  sellAmount?: string;
 };
 
 type Props = {
@@ -69,8 +68,10 @@ type Props = {
   currency: Currency;
   fiatCurrencyId?: string;
   mode: "onRamp" | "offRamp" | "history";
-  amount?: number;
-  amountCurrency?: "fiat" | "crypto";
+  cryptoAmount?: string;
+  fiatAmount?: string;
+  language?: string;
+  primaryColor?: string;
 };
 
 const CoinifyWidget = ({
@@ -78,8 +79,9 @@ const CoinifyWidget = ({
   currency,
   fiatCurrencyId,
   mode,
-  amount,
-  amountCurrency,
+  fiatAmount,
+  cryptoAmount,
+  primaryColor,
 }: Props) => {
   const api = useApi();
 
@@ -87,17 +89,12 @@ const CoinifyWidget = ({
 
   const tradeId = useRef(null);
   const [widgetLoaded, setWidgetLoaded] = useState(false);
-  const { colors } = useTheme();
 
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
 
-  // the palette colors are hsla, we need to convert theme to rgba to pass theme to the widget. cf. https://developer.coinify.com/apidoc/trade/#trade-widget
-  // FIXME: need to find the appropriate color for the CTA button here
-  const rgbaColor = rgba(colors.constant.purple, 1);
-
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
-    primaryColor: rgbaColor,
+    primaryColor,
     partnerId: coinifyConfig.partnerId,
     cryptoCurrencies: currency ? currency.ticker : null,
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : undefined,
@@ -109,19 +106,15 @@ const CoinifyWidget = ({
   if (mode === "onRamp") {
     widgetConfig.transferOutMedia = "blockchain";
     widgetConfig.confirmMessages = true;
-
-    if (amountCurrency === "fiat" && amount) {
-      widgetConfig.buyAmount = amount;
-    }
+    widgetConfig.buyAmount = fiatAmount;
+    widgetConfig.sellAmount = cryptoAmount;
   }
 
   if (mode === "offRamp") {
     widgetConfig.transferInMedia = "blockchain";
     widgetConfig.confirmMessages = true;
-
-    if (amountCurrency === "crypto" && amount) {
-      widgetConfig.sellAmount = amount;
-    }
+    widgetConfig.buyAmount = fiatAmount;
+    widgetConfig.sellAmount = cryptoAmount;
   }
 
   if (mode === "history") {
