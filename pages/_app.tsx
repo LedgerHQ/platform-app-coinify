@@ -27,7 +27,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       </Head>
       {/* FIXME: remove local GlobalStyle? Should be handled by ui lib StyleProvider. PS: handle __next div 100% height */}
       <GlobalStyle />
-      <StyleProvider selectedPalette={theme}>
+      <StyleProvider selectedPalette={theme} fontsPath="/fonts">
         <LedgerLiveSDKProvider>
           <Component {...pageProps} />
         </LedgerLiveSDKProvider>
