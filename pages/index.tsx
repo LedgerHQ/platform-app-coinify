@@ -12,7 +12,7 @@ type QueryParams = {
   fiatCurrencyId?: string;
   cryptoCurrencyId?: string;
   primaryColor?: string;
-  type?: "onRamp" | "offRamp";
+  mode?: "onRamp" | "offRamp";
   fiatAmount?: string;
   cryptoAmount?: string;
 };
@@ -53,7 +53,7 @@ const Page = () => {
     fiatCurrencyId,
     cryptoCurrencyId,
     primaryColor,
-    type,
+    mode,
     fiatAmount,
     cryptoAmount,
   } = router.query as QueryParams;
@@ -64,7 +64,7 @@ const Page = () => {
         defaultCryptoCurrencyId={cryptoCurrencyId}
         defaultFiatCurrencyId={fiatCurrencyId}
         defaultAccountId={accountId}
-        defaultMode={type}
+        defaultMode={mode}
         defaultCryptoAmount={cryptoAmount}
         defaultFiatAmount={fiatAmount}
         language={language}
