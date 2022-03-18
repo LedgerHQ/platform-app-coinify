@@ -94,7 +94,11 @@ const Coinify = ({
     Currency | undefined
   >(
     defaultCryptoCurrencyId
-      ? currencies.find((currency) => currency.id === defaultCryptoCurrencyId)
+      ? currencies.find(
+          (currency) =>
+            currency.ticker.toLowerCase() ===
+            defaultCryptoCurrencyId.toLowerCase()
+        )
       : undefined
   );
 
@@ -202,9 +206,7 @@ const Coinify = ({
             Reset
           </Button>
         </Footer>
-      ) : (
-        <></>
-      )}
+      ) : null}
     </Layout>
   );
 };
