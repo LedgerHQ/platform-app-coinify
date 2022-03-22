@@ -10,7 +10,7 @@ import {
   FAMILIES,
   FeesLevel,
 } from "@ledgerhq/live-app-sdk";
-import type { Account, Currency, Unit } from "@ledgerhq/live-app-sdk";
+import type { Account, Unit } from "@ledgerhq/live-app-sdk";
 import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
