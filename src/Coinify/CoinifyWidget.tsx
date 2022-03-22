@@ -65,7 +65,7 @@ type CoinifyWidgetConfig = {
 
 type Props = {
   account: Account;
-  currency: Currency;
+  currency: string;
   fiatCurrencyId?: string;
   mode: "onRamp" | "offRamp" | "history";
   cryptoAmount?: string;
@@ -96,7 +96,7 @@ const CoinifyWidget = ({
   const widgetConfig: CoinifyWidgetConfig = {
     primaryColor,
     partnerId: coinifyConfig.partnerId,
-    cryptoCurrencies: currency ? currency.ticker : null,
+    cryptoCurrencies: currency ? currency : null,
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : undefined,
     address: account.address,
     targetPage: mode,
@@ -125,14 +125,10 @@ const CoinifyWidget = ({
   useEffect(() => {
     if (!currency) return;
     if (mode === "onRamp" && account) {
-      console.log(
-        `Coinify Start OnRamp Widget | currencyName: ${currency.name}`
-      );
+      console.log(`Coinify Start OnRamp Widget | currencyName: ${currency}`);
     }
     if (mode === "offRamp" && account) {
-      console.log(
-        `Coinify Start OffRamp Widget | currencyName: ${currency.name}`
-      );
+      console.log(`Coinify Start OffRamp Widget | currencyName: ${currency}`);
     }
     if (mode === "history") {
       console.log("Coinify Start History Widget");
@@ -159,9 +155,7 @@ const CoinifyWidget = ({
         coinifyConfig.host
       );
       if (currency) {
-        console.log(
-          `Coinify Confirm OnRamp End | currencyName: ${currency.name}`
-        );
+        console.log(`Coinify Confirm OnRamp End | currencyName: ${currency}`);
       }
     },
     [coinifyConfig.host, currency, account, mode]
@@ -182,9 +176,7 @@ const CoinifyWidget = ({
           coinifyConfig.host
         );
         if (currency) {
-          console.log(
-            `Coinify Confirm Buy End | currencyName: ${currency.name}`
-          );
+          console.log(`Coinify Confirm Buy End | currencyName: ${currency}`);
         }
       }
       if (tradeId.current && mode === "offRamp") {
@@ -201,9 +193,7 @@ const CoinifyWidget = ({
           coinifyConfig.host
         );
         if (currency) {
-          console.log(
-            `Coinify Confirm Sell End | currencyName: ${currency.name}`
-          );
+          console.log(`Coinify Confirm Sell End | currencyName: ${currency}`);
         }
       }
     }
@@ -297,7 +287,11 @@ const CoinifyWidget = ({
     const tx: BitcoinTransaction = {
       family: FAMILIES.BITCOIN,
       amount: parseCurrencyUnit(
-        currency.units[0],
+        {
+          magnitude: 8,
+          name: "bitcoin",
+          code: "BTC",
+        },
         coinifyContext.inAmount.toString(10)
       ),
       recipient: coinifyContext.transferIn.details.account,
@@ -319,7 +313,7 @@ const CoinifyWidget = ({
 
     // signedTx is not actually used by the widget
     return signedTx;
-  }, [account.id, api, currency.units, setTransactionId]);
+  }, [account.id, api, setTransactionId]);
 
   useEffect(() => {
     if (!account) return;
@@ -363,7 +357,7 @@ const CoinifyWidget = ({
 
             if (currency) {
               console.log(
-                `Coinify Confirm Buy Start | currencyName: ${currency.name}`
+                `Coinify Confirm Buy Start | currencyName: ${currency}`
               );
             }
           } else {
@@ -373,7 +367,7 @@ const CoinifyWidget = ({
         case "trade.trade-placed":
           if (currency) {
             console.log(
-              `Coinify Widget Event Trade Placed | currencyName: ${currency.name}`
+              `Coinify Widget Event Trade Placed | currencyName: ${currency}`
             );
           }
           break;

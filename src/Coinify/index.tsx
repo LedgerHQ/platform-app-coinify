@@ -85,22 +85,23 @@ const Coinify = ({
     defaultMode || "onRamp"
   );
 
-  const [selectedAccount, setSelectedAccount] = useState<Account | undefined>(
+  const [selectedAccountId, setSelectedAccount] = useState<string | undefined>(
     defaultAccountId
-      ? accounts.find((account) => account.id === defaultAccountId)
-      : undefined
   );
-  const [selectedCurrency, setSelectedCurrency] = useState<
-    Currency | undefined
-  >(
-    defaultCryptoCurrencyId
-      ? currencies.find(
-          (currency) =>
-            currency.ticker.toLowerCase() ===
-            defaultCryptoCurrencyId.toLowerCase()
-        )
-      : undefined
-  );
+  const [selectedCurrencyId, setSelectedCurrency] = useState<
+    string | undefined
+  >(defaultCryptoCurrencyId);
+
+  const selectedAccount = selectedAccountId
+    ? accounts.find((account) => account.id === selectedAccountId)
+    : undefined;
+
+  const selectedCurrency = selectedCurrencyId
+    ? currencies.find(
+        (currency) =>
+          currency.ticker.toLowerCase() === selectedCurrencyId.toLowerCase()
+      )
+    : undefined;
 
   const onReset = useCallback(() => setSelectedAccount(undefined), []);
 
@@ -149,8 +150,12 @@ const Coinify = ({
 
     const currency = currencies.find((cur) => cur.id === account?.currency);
 
-    setSelectedCurrency(currency);
-    setSelectedAccount(account);
+    if (currency) {
+      setSelectedCurrency(currency.ticker);
+    }
+    if (account) {
+      setSelectedAccount(account.id);
+    }
   };
 
   return (
@@ -175,10 +180,10 @@ const Coinify = ({
       ) : null}
 
       <Content>
-        {selectedAccount && selectedCurrency ? (
+        {selectedAccount && selectedCurrencyId ? (
           <CoinifyWidget
             account={selectedAccount}
-            currency={selectedCurrency}
+            currency={selectedCurrencyId}
             fiatCurrencyId={defaultFiatCurrencyId}
             mode={selectedMode}
             fiatAmount={defaultFiatAmount}
