@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import LedgerLiveApi, { WindowMessageTransport } from "@ledgerhq/live-app-sdk";
+import { ExchangeSDK } from "@ledgerhq/exchange-sdk";
 
 type LedgerLiveSDKContextType = {
-  api?: LedgerLiveApi;
+  api?: ExchangeSDK;
 };
 
 const defaultContext: LedgerLiveSDKContextType = { api: undefined };
@@ -15,18 +15,16 @@ const LedgerLiveSDKProvider = ({
 }: {
   children: React.ReactNode;
 }): React.ReactElement => {
-  const [api, setApi] = useState<LedgerLiveApi | null>(null);
+  const [api, setApi] = useState<ExchangeSDK | null>(null);
 
   useEffect(() => {
-    const llapi = new LedgerLiveApi(new WindowMessageTransport());
+    const llapi = new ExchangeSDK("coinify");
 
     setApi(llapi);
 
-    llapi.connect();
-
     return () => {
       setApi(null);
-      void llapi.disconnect();
+      llapi.disconnect();
     };
   }, []);
 
@@ -41,7 +39,7 @@ const LedgerLiveSDKProvider = ({
   );
 };
 
-export const useApi = () => {
+export const useApi = (): ExchangeSDK => {
   const { api } = useContext(LedgerLiveSDKContext);
 
   // This should theoretically never happen

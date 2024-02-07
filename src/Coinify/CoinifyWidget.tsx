@@ -1,24 +1,19 @@
 // @flow
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { BigNumber } from "bignumber.js";
 import styled from "styled-components";
 import querystring from "querystring";
-import {
-  BitcoinTransaction,
-  ExchangeType,
-  FAMILIES,
-  FeesLevel,
-} from "@ledgerhq/live-app-sdk";
-import type { Account, Unit } from "@ledgerhq/live-app-sdk";
+import type { Account } from "@ledgerhq/wallet-api-client";
 import { useApi } from "../providers/LedgerLiveSDKProvider";
+import { ExchangeSDK } from "@ledgerhq/exchange-sdk";
+import BigNumber from "bignumber.js";
 
-const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
-  const str = valueString.replace(/,/g, ".");
-  const value = new BigNumber(str);
-  if (value.isNaN()) return new BigNumber(0);
-  return value.times(new BigNumber(10).pow(unit.magnitude)).integerValue();
-};
+// const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
+//   const str = valueString.replace(/,/g, ".");
+//   const value = new BigNumber(str);
+//   if (value.isNaN()) return new BigNumber(0);
+//   return value.times(new BigNumber(10).pow(unit.magnitude)).integerValue();
+// };
 
 type CoinifyConfig = {
   host: string;
@@ -83,7 +78,7 @@ const CoinifyWidget = ({
   cryptoAmount,
   primaryColor,
 }: Props) => {
-  const api = useApi();
+  const api: ExchangeSDK = useApi();
 
   const env = new URLSearchParams(window.location.search).get("env") || "prod";
 
@@ -230,7 +225,14 @@ const CoinifyWidget = ({
   }, [coinifyConfig.host, account, mode]);
 
   const setTransactionId = useCallback(
-    (txId) => {
+    (txId: string): Promise<{
+      inAmount: number;
+      transferIn: unknown;
+      providerSig: {
+        payload: string;
+        signature: string;
+      }
+    }> => {
       return new Promise((resolve) => {
         const onReply = (e: any) => {
           if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data)
@@ -241,7 +243,9 @@ const CoinifyWidget = ({
             resolve(context);
           }
         };
+
         window.addEventListener("message", onReply, { once: true });
+
         if (widgetRef.current?.contentWindow) {
           widgetRef.current.contentWindow.postMessage(
             {
@@ -255,8 +259,7 @@ const CoinifyWidget = ({
             },
             coinifyConfig.host
           );
-        }
-        if (widgetRef.current?.contentWindow) {
+
           widgetRef.current.contentWindow.postMessage(
             {
               type: "event",
@@ -274,45 +277,28 @@ const CoinifyWidget = ({
   );
 
   const initSellFlow = useCallback(async () => {
-    const nonce = await api
-      .startExchange({
-        exchangeType: ExchangeType.SELL,
-      })
-      .catch((e) => {
-        throw e;
-      });
+    const getSellPayload = async (nonce: string) => {
+      const coinifyContext = await setTransactionId(nonce);
 
-    const coinifyContext: any = await setTransactionId(nonce);
-
-    const tx: BitcoinTransaction = {
-      family: FAMILIES.BITCOIN,
-      amount: parseCurrencyUnit(
-        {
-          magnitude: 8,
-          name: "bitcoin",
-          code: "BTC",
-        },
-        coinifyContext.inAmount.toString(10)
-      ),
-      recipient: coinifyContext.transferIn.details.account,
+      return {
+        recipientAddress: (coinifyContext.transferIn as any).details.account,
+        amount: new BigNumber(coinifyContext.inAmount.toString(10)),
+        binaryPayload: Buffer.from(
+          coinifyContext.providerSig.payload,
+          "ascii"
+        ),
+        signature: Buffer.from(
+          coinifyContext.providerSig.signature,
+          "base64"
+        ),
+      };
     };
-
-    const signedTx = await api
-      .completeExchange({
-        provider: "coinify",
-        fromAccountId: account.id,
-        transaction: tx,
-        binaryPayload: Buffer.from(coinifyContext.providerSig.payload, "ascii"),
-        signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
-        feesStrategy: FeesLevel.Medium,
-        exchangeType: ExchangeType.SELL,
-      })
-      .catch((e) => {
-        throw e;
+    await api.sell({
+        accountId: account.id,
+        amount: new BigNumber(0),
+        feeStrategy: "MEDIUM",
+        getSellPayload,
       });
-
-    // signedTx is not actually used by the widget
-    return signedTx;
   }, [account.id, api, setTransactionId]);
 
   useEffect(() => {
@@ -350,7 +336,7 @@ const CoinifyWidget = ({
             // FIXME: VERIFY ADDRESS
 
             // FIXME: handle cancel / error
-            api
+            api.walletAPI.account
               .receive(account.id)
               .then((verifiedAddress) => handleOnResultBuy(verifiedAddress))
               .catch((error: unknown) => console.error(error));
