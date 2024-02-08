@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useApi } from "../src/providers/LedgerLiveSDKProvider";
 
 import Coinify from "../src/Coinify";
-import { Account, Currency } from "@ledgerhq/live-app-sdk";
+import { Account, Currency } from "@ledgerhq/wallet-api-client";
 
 type QueryParams = {
   accountId?: string;
@@ -35,7 +35,7 @@ const Page = () => {
   const api = useApi();
 
   useEffect(() => {
-    Promise.all([api.listAccounts(), api.listCurrencies()])
+    Promise.all([api.walletAPI.account.list(), api.walletAPI.currency.list()])
       .then(([accounts, currencies]) => {
         setState({
           data: { accounts, currencies },

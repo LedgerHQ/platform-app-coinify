@@ -2,12 +2,11 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 
 import styled from "styled-components";
 
-import type { Account, Currency } from "@ledgerhq/live-app-sdk";
+import type { Account, Currency } from "@ledgerhq/wallet-api-client";
 
 import CoinifyWidget from "./CoinifyWidget";
-import { Button, Icon, Text } from "@ledgerhq/react-ui";
+import { Button, Icon, Text, Chip } from "@ledgerhq/react-ui";
 
-import { Chip } from "@ledgerhq/react-ui/components/tabs";
 import { useApi } from "../providers/LedgerLiveSDKProvider";
 
 const Layout = styled.div`
@@ -135,10 +134,10 @@ const Coinify = ({
       return;
     }
 
-    const account = await api
-      .requestAccount({
+    const account = await api.walletAPI.account
+      .request({
         // FIXME: use a 'getSelectableCurrencies' function instead of ternarry
-        currencies:
+        currencyIds:
           selectedMode === "onRamp"
             ? SELECTABLE_CURRENCIES_ONRAMP
             : SELECTABLE_CURRENCIES_OFFRAMP,

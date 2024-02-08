@@ -33,6 +33,14 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+# How to develop
+Use the `manifest-dev.json` file to load it in Ledger Live.
+
+## Use sandbox environment
+In the "manifest.json" file, set the `url` parameter with a `env` query parameter set to "sandbox".
+
+Example: `"url": "http://localhost:3000?env=sandbox"`
+
 # Todo
 
 - Polish UI: for now it is the bare minimum and not styled

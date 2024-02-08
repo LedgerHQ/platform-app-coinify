@@ -6,7 +6,9 @@
     "import",
     "@typescript-eslint",
     "react-hooks",
-    "react"
+    "react",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "extends": [
     "airbnb-typescript/base",
