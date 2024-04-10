@@ -421,33 +421,35 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/crypto-icons-ui/-/crypto-icons-ui-1.0.1.tgz#9a499665d06dc813f2c9d6b899a8a3361dd85cb1"
   integrity sha512-kYLbuUrJyJknHJXLGpDBHwHpiK4i0RyrO1GoQwGDBTemMmqmLndsEbVAeMxorEGIHKC4GkYRzJzh+hpL/H4b7g==
 
-"@ledgerhq/devices@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-8.1.0.tgz#39b12feabe1c7a99b86667bedf2eafbd125cf217"
-  integrity sha512-Vsdv84Nwzee0qhObdwVzhkxW1+h2cFoD1AWuU8N1V/2OJKiVS35A1qloSCF0oHapg+KTJvim8tr5rRvlkCYyzQ==
+"@ledgerhq/devices@^8.2.2":
+  version "8.2.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-8.2.2.tgz#d6d758182d690ad66e14f88426c448e8c54d259d"
+  integrity sha512-SKahGA4p0mZ3ovypOJ2wa5mUvUkArE3HBrwWKYf+cRs+t/Licp3OJfhj+DHIxP3AfyH2xR6CFFWECYHeKwGsDQ==
   dependencies:
-    "@ledgerhq/errors" "^6.16.0"
+    "@ledgerhq/errors" "^6.16.3"
     "@ledgerhq/logs" "^6.12.0"
     rxjs "^7.8.1"
     semver "^7.3.5"
 
-"@ledgerhq/errors@^6.14.0", "@ledgerhq/errors@^6.16.0":
-  version "6.16.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.16.0.tgz#0aaf16bbf649a3b43867746781b2e3adebf7fe3a"
-  integrity sha512-vnew6lf4jN6E+WI0DFhD4WY0uM8LYL8HCumtUr86hNwvmEfebi7LxxpJGmYfVQD5TgEC7NibYnQ+2q9XWAc02A==
+"@ledgerhq/errors@^6.16.2", "@ledgerhq/errors@^6.16.3":
+  version "6.16.3"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.16.3.tgz#646f68cc7e6e8d5126bce1ca06140c5ad963bee8"
+  integrity sha512-3w7/SJVXOPa9mpzyll7VKoKnGwDD3BzWgN1Nom8byR40DiQvOKjHX+kKQausCedTHVNBn9euzPCNsftZ9+mxfw==
 
-"@ledgerhq/exchange-sdk@file:../exchange-sdk/lib":
-  version "0.0.0"
+"@ledgerhq/exchange-sdk@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/exchange-sdk/-/exchange-sdk-0.6.0.tgz#535efa321b905fd77fb15e2bb86bfc2ad86060ec"
+  integrity sha512-UjK1ewFMaNvhwo0ns3NdREn4yxxLSZQIaZh4dpUlkKO0TIo0ZznUdeWaUa7bJyuS2TnMDaDZv0/i7tNluNiDfw==
   dependencies:
     axios "^1.3.4"
 
-"@ledgerhq/hw-transport@^6.28.8":
-  version "6.30.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.30.0.tgz#9c8a8f2c8281fbc4a3db1d1f3ac44a456b38281a"
-  integrity sha512-wrAwn/wCAaGP2Yuy78cLyqmQNzbuDvUv4gJYF/UO4djvUz0jjvD2w5kxRWxF/W93vyKT+/RplRtFk3CJzD3e3A==
+"@ledgerhq/hw-transport@^6.30.4":
+  version "6.30.5"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-6.30.5.tgz#841c9e4bb3849536db110ca2894d693d55bf54fd"
+  integrity sha512-JMl//7BgPBvWxrWyMu82jj6JEYtsQyOyhYtonWNgtxn6KUZWht3gU4gxmLpeIRr+DiS7e50mW7m3GA+EudZmmA==
   dependencies:
-    "@ledgerhq/devices" "^8.1.0"
-    "@ledgerhq/errors" "^6.16.0"
+    "@ledgerhq/devices" "^8.2.2"
+    "@ledgerhq/errors" "^6.16.3"
     "@ledgerhq/logs" "^6.12.0"
     events "^3.3.0"
 
@@ -487,24 +489,32 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/ui-shared/-/ui-shared-0.2.1.tgz#1c24cd7ffb58d99559b38f31ca2268b7556f5764"
   integrity sha512-mPvo78REWxhYTmkFI96ryCOAyZTV42f+l55AnuoeJ2tGn5nN7bmkOUIzZ4MJOx5VvGlWcvtY/+2dA0yEelCs9w==
 
-"@ledgerhq/wallet-api-client@^1.5.0":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/wallet-api-client/-/wallet-api-client-1.5.3.tgz#688ce61a2feb1b3415cca0e6ebd98fcdd6534a09"
-  integrity sha512-hc57lf+3VIi4yjj7a9NlNCvib0VPsv7QhKeerOC5f0Vrqw/H+pTcpUmXbCDT+jmKgAztABMI1VdhvdYuGD3DtQ==
+"@ledgerhq/wallet-api-client@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/wallet-api-client/-/wallet-api-client-1.5.7.tgz#9cee4876a6f1c98e55106b9b848468fd7fbf8a09"
+  integrity sha512-REY0NO/T+PxY0v8DXWuT0TFsPq01vuvgBmapzlgRN0PM/ZOS4grawZN1q/j/p1jnwqn5RGwB0po/EoDoY42RdA==
   dependencies:
-    "@ledgerhq/hw-transport" "^6.28.8"
-    "@ledgerhq/wallet-api-core" "1.7.0"
+    "@ledgerhq/hw-transport" "^6.30.4"
+    "@ledgerhq/wallet-api-core" "1.9.0"
     bignumber.js "^9.1.2"
 
-"@ledgerhq/wallet-api-core@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/wallet-api-core/-/wallet-api-core-1.7.0.tgz#7cb157d1378349b3dc6a7ab7c90fd149cca03628"
-  integrity sha512-jr75eBQxonem4JOs2a708ZU+ynFjCkyt3olTjbCMRZp/6ENVzfmDOGkBq7/YYZEEM2w4u4P0d41MwpDGtxRapA==
+"@ledgerhq/wallet-api-core@1.9.0", "@ledgerhq/wallet-api-core@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/wallet-api-core/-/wallet-api-core-1.9.0.tgz#5a8c98a70dc6a496a5b1cf68190311e63fc318e1"
+  integrity sha512-fhE+9mbf+AyNIgZVToUwfBUZvh5IYFrWvyMxGoLr9J6p0KmFjLBkYC+j+mHlfqWB57wCwAP5jBfXJxhsTYiPfg==
   dependencies:
-    "@ledgerhq/errors" "^6.14.0"
+    "@ledgerhq/errors" "^6.16.2"
     bignumber.js "^9.1.2"
-    uuid "^9.0.0"
-    zod "^3.22.2"
+    uuid "^9.0.1"
+    zod "^3.22.4"
+
+"@ledgerhq/wallet-api-exchange-module@^0.5.0-next":
+  version "0.5.0-nightly.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/wallet-api-exchange-module/-/wallet-api-exchange-module-0.5.0-nightly.2.tgz#53b508fc7f964e79d2969e1fb17b97e633e10abc"
+  integrity sha512-gRRJVHG6lS9i83gfwOmx/Lbk3RSgkuPWPK1CgvCgHkhMlWvl3TSeqiQpt0sHIQWF2o4K8/IYBT/vMHiratRmGA==
+  dependencies:
+    "@ledgerhq/wallet-api-client" "^1.5.7"
+    "@ledgerhq/wallet-api-core" "^1.9.0"
 
 "@next/env@14.1.0":
   version "14.1.0"
@@ -3773,7 +3783,7 @@ use-isomorphic-layout-effect@^1.1.1:
   resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.1.tgz#7bb6589170cd2987a152042f9084f9effb75c225"
   integrity sha512-L7Evj8FGcwo/wpbv/qvSfrkHFtOpCzvM5yl2KVyDJoylVuSvzphiiasmjgQPttIGBAy2WKiBNR98q8w7PiNgKQ==
 
-uuid@^9.0.0:
+uuid@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.1.tgz#e188d4c8853cc722220392c424cd637f32293f30"
   integrity sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
@@ -3878,7 +3888,7 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-zod@^3.22.2:
+zod@^3.22.4:
   version "3.22.4"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.22.4.tgz#f31c3a9386f61b1f228af56faa9255e845cf3fff"
   integrity sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==

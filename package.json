@@ -17,9 +17,10 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.9",
-    "@ledgerhq/exchange-sdk": "file:./../exchange-sdk/lib",
+    "@ledgerhq/exchange-sdk": "^0.6.0",
     "@ledgerhq/react-ui": "^0.14.14",
-    "@ledgerhq/wallet-api-client": "^1.5.0",
+    "@ledgerhq/wallet-api-client": "^1.5.7",
+    "@ledgerhq/wallet-api-exchange-module": "^0.5.0-next",
     "@types/react-transition-group": "^4.4.3",
     "bignumber.js": "^9.1.2",
     "color": "^4.0.1",
