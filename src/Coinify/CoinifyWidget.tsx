@@ -8,13 +8,6 @@ import { useApi } from "../providers/LedgerLiveSDKProvider";
 import { ExchangeSDK } from "@ledgerhq/exchange-sdk";
 import BigNumber from "bignumber.js";
 
-// const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
-//   const str = valueString.replace(/,/g, ".");
-//   const value = new BigNumber(str);
-//   if (value.isNaN()) return new BigNumber(0);
-//   return value.times(new BigNumber(10).pow(unit.magnitude)).integerValue();
-// };
-
 type CoinifyConfig = {
   host: string;
   url: string;
