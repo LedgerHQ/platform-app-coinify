@@ -12,6 +12,7 @@
     "lint:fix": "eslint --cache --fix src/** pages/**"
   },
   "dependencies": {
+    "@ledgerhq/icons-ui": "^0.6.4",
     "@ledgerhq/live-app-sdk": "0.6.0",
     "@ledgerhq/react-ui": "^0.7.2",
     "@types/react-transition-group": "^4.4.3",

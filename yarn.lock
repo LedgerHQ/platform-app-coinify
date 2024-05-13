@@ -344,6 +344,11 @@
     "@types/styled-components" "^5.1.14"
     styled-components "^5.2.3"
 
+"@ledgerhq/icons-ui@^0.6.4":
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/icons-ui/-/icons-ui-0.6.4.tgz#06fbb92f041e43a921dcb593723bb0e37c38ef72"
+  integrity sha512-myxFBnCEFAv2e6Ddf6skiABAByYxXjvnTPoRoRY5xr8BlK81Uh/MkBr+nCKlBMxGSW3+Ldwz/PvYBVXdLrXevw==
+
 "@ledgerhq/live-app-sdk@0.6.0":
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/live-app-sdk/-/live-app-sdk-0.6.0.tgz#65595132d73bd3834feafdaa34ad6aa87fb133b1"

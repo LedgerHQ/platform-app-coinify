@@ -52,7 +52,7 @@ const SELECTABLE_CURRENCIES_ONRAMP = [
   "ethereum/erc20/link_chainlink",
 ];
 
-const SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
+const SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin_testnet"];
 
 type CoinifyProps = {
   defaultCryptoCurrencyId?: string;
