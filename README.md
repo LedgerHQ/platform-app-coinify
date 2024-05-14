@@ -9,23 +9,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
@@ -34,12 +23,21 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 # How to develop
-Use the `manifest-dev.json` file to load it in Ledger Live.
+Use the `manifest-dev.json` file to load it in Ledger Live as a live-app. 
 
 ## Use sandbox environment
 In the "manifest.json" file, set the `url` parameter with a `env` query parameter set to "sandbox".
 
 Example: `"url": "http://localhost:3000?env=sandbox"`
+
+## URL params can change the UI landing page
+For exampleoing through the sell flow on ledger live will land you directly on the sell page. Example sell params
+```
+?mode=offRamp
+```
+
+##Testing 
+You will need a bitcoin_test and come funds to test the flow end to end. 
 
 # Todo
 

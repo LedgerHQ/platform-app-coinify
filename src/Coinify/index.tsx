@@ -1,3 +1,5 @@
+// @flow
+
 import React, { useState, useCallback, useEffect, useRef } from "react";
 
 import styled from "styled-components";
@@ -51,7 +53,7 @@ const SELECTABLE_CURRENCIES_ONRAMP = [
   "ethereum/erc20/link_chainlink",
 ];
 
-const SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
+
 
 type CoinifyProps = {
   defaultCryptoCurrencyId?: string;
@@ -133,7 +135,11 @@ const Coinify = ({
       console.warn("No currencies available");
       return;
     }
-
+    let SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
+    const env = new URLSearchParams(window.location.search).get("env") || "prod";
+    if(env && env === "sandbox") {
+     SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin_testnet"];
+    }
     const account = await api.walletAPI.account
       .request({
         // FIXME: use a 'getSelectableCurrencies' function instead of ternarry
