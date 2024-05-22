@@ -2,7 +2,7 @@
   "id": "coinify",
   "name": "Coinify",
   "private": true,
-  "url": "https://platform-app-coinify.vercel.app?env=sandbox",
+  "url": "https://platform-app-coinify-staging.vercel.app/?env=sandbox",
   "homepageUrl": "https://www.coinify.com/",
   "icon": "https://cdn.live.ledger.com/icons/platform/coinify.png",
   "platforms": ["android", "desktop", "ios"],
