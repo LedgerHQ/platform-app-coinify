@@ -1,9 +1,10 @@
+"use client";
 // @flow
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
 import querystring from "querystring";
-import { useApi } from "../providers/LedgerLiveSDKProvider";
+import { useApi } from "../Providers/LedgerLiveSDKProvider";
 
 type CoinifyConfig = {
   host: string;
@@ -141,13 +142,13 @@ const CoinifyWidgetBuy = ({
             confirmed: true,
           },
         },
-        coinifyConfig.host
+        coinifyConfig.host,
       );
       if (currency) {
         console.log(`Coinify Confirm OnRamp End | currencyName: ${currency}`);
       }
     },
-    [coinifyConfig.host, currency, accountAddress, mode]
+    [coinifyConfig.host, currency, accountAddress, mode],
   );
 
   const handleOnResult = useCallback(() => {
@@ -162,7 +163,7 @@ const CoinifyWidgetBuy = ({
               confirmed: true,
             },
           },
-          coinifyConfig.host
+          coinifyConfig.host,
         );
         if (currency) {
           console.log(`Coinify Confirm Buy End | currencyName: ${currency}`);
@@ -179,7 +180,7 @@ const CoinifyWidgetBuy = ({
               tradeId: tradeId.current,
             },
           },
-          coinifyConfig.host
+          coinifyConfig.host,
         );
         if (currency) {
           console.log(`Coinify Confirm Sell End | currencyName: ${currency}`);
@@ -200,7 +201,7 @@ const CoinifyWidgetBuy = ({
               confirmed: false,
             },
           },
-          coinifyConfig.host
+          coinifyConfig.host,
         );
       }
       if (mode === "offRamp") {
@@ -212,7 +213,7 @@ const CoinifyWidgetBuy = ({
               confirmed: false,
             },
           },
-          coinifyConfig.host
+          coinifyConfig.host,
         );
       }
     }
@@ -239,7 +240,7 @@ const CoinifyWidgetBuy = ({
                   tradeId: tradeId.current,
                 },
               },
-              coinifyConfig.host
+              coinifyConfig.host,
             );
           }
           break;
@@ -254,7 +255,7 @@ const CoinifyWidgetBuy = ({
 
             if (currency) {
               console.log(
-                `Coinify Confirm Buy Start | currencyName: ${currency}`
+                `Coinify Confirm Buy Start | currencyName: ${currency}`,
               );
             }
           } else {
@@ -264,7 +265,7 @@ const CoinifyWidgetBuy = ({
         case "trade.trade-placed":
           if (currency) {
             console.log(
-              `Coinify Widget Event Trade Placed | currencyName: ${currency}`
+              `Coinify Widget Event Trade Placed | currencyName: ${currency}`,
             );
           }
           break;

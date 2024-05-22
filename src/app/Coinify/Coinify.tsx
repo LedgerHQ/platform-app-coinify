@@ -1,14 +1,17 @@
+"use client";
+
+// @flow
+
 import React, { useState, useCallback, useEffect, useRef } from "react";
 
 import styled from "styled-components";
 
-import type { Account, Currency } from "@ledgerhq/live-app-sdk";
+import type { Account, Currency } from "@ledgerhq/wallet-api-client";
 
 import CoinifyWidget from "./CoinifyWidget";
-import { Button, Icon, Text } from "@ledgerhq/react-ui";
-
-import { Chip } from "@ledgerhq/react-ui/components/tabs";
-import { useApi } from "../providers/LedgerLiveSDKProvider";
+import { Button, Icon, Text, Chip } from "@ledgerhq/react-ui";
+import { useApi } from "../Providers/LedgerLiveSDKProvider";
+import { useSearchParams } from "next/navigation";
 
 const Layout = styled.div`
   display: flex;
@@ -34,7 +37,7 @@ const Footer = styled.div`
   justify-content: center;
 `;
 
-type Modes = "onRamp" | "offRamp";
+export type Modes = "onRamp" | "offRamp";
 
 const SELECTABLE_CURRENCIES_ONRAMP = [
   "bitcoin",
@@ -52,45 +55,35 @@ const SELECTABLE_CURRENCIES_ONRAMP = [
   "ethereum/erc20/link_chainlink",
 ];
 
-const SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
-
 type CoinifyProps = {
-  defaultCryptoCurrencyId?: string;
-  defaultFiatCurrencyId?: string;
-  defaultAccountId?: string;
-  defaultMode?: Modes;
-  defaultCryptoAmount?: string;
-  defaultFiatAmount?: string;
-  language?: string;
-  primaryColor?: string;
   currencies: Currency[];
   accounts: Account[];
 };
 
-const Coinify = ({
-  defaultCryptoCurrencyId,
-  defaultFiatCurrencyId,
-  defaultAccountId,
-  defaultMode,
-  defaultCryptoAmount,
-  defaultFiatAmount,
-  currencies,
-  accounts,
-  language,
-  primaryColor,
-}: CoinifyProps) => {
+const Coinify = ({ currencies, accounts }: CoinifyProps) => {
+  const searchParams = useSearchParams();
+
+  const defaultAccountId = searchParams.get("accountId");
+  const language = searchParams.get("language");
+  const defaultFiatCurrencyId = searchParams.get("fiatCurrencyId");
+  const defaultCryptoCurrencyId = searchParams.get("cryptoCurrencyId");
+  const primaryColor = searchParams.get("primaryColor");
+  const defaultMode = searchParams.get("mode") as Modes;
+  const defaultFiatAmount = searchParams.get("fiatAmount");
+  const defaultCryptoAmount = searchParams.get("cryptoAmount");
+
   const api = useApi();
 
   const [selectedMode, setSelectedMode] = useState<Modes>(
-    defaultMode || "onRamp"
+    defaultMode || "onRamp",
   );
 
-  const [selectedAccountId, setSelectedAccount] = useState<string | undefined>(
-    defaultAccountId
+  const [selectedAccountId, setSelectedAccount] = useState<string | null>(
+    defaultAccountId,
   );
-  const [selectedCurrencyId, setSelectedCurrency] = useState<
-    string | undefined
-  >(defaultCryptoCurrencyId);
+  const [selectedCurrencyId, setSelectedCurrency] = useState<string | null>(
+    defaultCryptoCurrencyId,
+  );
 
   const selectedAccount = selectedAccountId
     ? accounts.find((account) => account.id === selectedAccountId)
@@ -99,11 +92,11 @@ const Coinify = ({
   const selectedCurrency = selectedCurrencyId
     ? currencies.find(
         (currency) =>
-          currency.ticker.toLowerCase() === selectedCurrencyId.toLowerCase()
+          currency.ticker.toLowerCase() === selectedCurrencyId.toLowerCase(),
       )
     : undefined;
 
-  const onReset = useCallback(() => setSelectedAccount(undefined), []);
+  const onReset = useCallback(() => setSelectedAccount(null), []);
 
   const mounted = useRef(false);
   useEffect(() => {
@@ -134,11 +127,16 @@ const Coinify = ({
       console.warn("No currencies available");
       return;
     }
-
-    const account = await api
-      .requestAccount({
+    let SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
+    const env =
+      new URLSearchParams(window.location.search).get("env") || "prod";
+    if (env && env === "sandbox") {
+      SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin_testnet"];
+    }
+    const account = await api.walletAPI.account
+      .request({
         // FIXME: use a 'getSelectableCurrencies' function instead of ternarry
-        currencies:
+        currencyIds:
           selectedMode === "onRamp"
             ? SELECTABLE_CURRENCIES_ONRAMP
             : SELECTABLE_CURRENCIES_OFFRAMP,

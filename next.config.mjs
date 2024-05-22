@@ -1,5 +1,8 @@
-// next.config.js
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  compiler: {
+    styledComponents: true,
+  },
   async headers() {
     return [
       {
@@ -22,3 +25,5 @@ module.exports = {
     ];
   },
 };
+
+export default nextConfig;
