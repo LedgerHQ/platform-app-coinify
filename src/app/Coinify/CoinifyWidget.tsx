@@ -142,13 +142,13 @@ const CoinifyWidget = ({
             confirmed: true,
           },
         },
-        coinifyConfig.host,
+        coinifyConfig.host
       );
       if (currency) {
         console.log(`Coinify Confirm OnRamp End | currencyName: ${currency}`);
       }
     },
-    [coinifyConfig.host, currency, account, mode],
+    [coinifyConfig.host, currency, account, mode]
   );
 
   const handleOnResult = useCallback(() => {
@@ -163,7 +163,7 @@ const CoinifyWidget = ({
               confirmed: true,
             },
           },
-          coinifyConfig.host,
+          coinifyConfig.host
         );
         if (currency) {
           console.log(`Coinify Confirm Buy End | currencyName: ${currency}`);
@@ -180,7 +180,7 @@ const CoinifyWidget = ({
               tradeId: tradeId.current,
             },
           },
-          coinifyConfig.host,
+          coinifyConfig.host
         );
         if (currency) {
           console.log(`Coinify Confirm Sell End | currencyName: ${currency}`);
@@ -201,7 +201,7 @@ const CoinifyWidget = ({
               confirmed: false,
             },
           },
-          coinifyConfig.host,
+          coinifyConfig.host
         );
       }
       if (mode === "offRamp") {
@@ -213,7 +213,7 @@ const CoinifyWidget = ({
               confirmed: false,
             },
           },
-          coinifyConfig.host,
+          coinifyConfig.host
         );
       }
     }
@@ -221,7 +221,7 @@ const CoinifyWidget = ({
 
   const setTransactionId = useCallback(
     (
-      txId: string,
+      txId: string
     ): Promise<{
       inAmount: number;
       transferIn: unknown;
@@ -254,7 +254,7 @@ const CoinifyWidget = ({
                 },
               },
             },
-            coinifyConfig.host,
+            coinifyConfig.host
           );
 
           widgetRef.current.contentWindow.postMessage(
@@ -265,12 +265,12 @@ const CoinifyWidget = ({
                 confirmed: true,
               },
             },
-            coinifyConfig.host,
+            coinifyConfig.host
           );
         }
       });
     },
-    [coinifyConfig],
+    [coinifyConfig]
   );
 
   const initSellFlow = useCallback(async () => {
@@ -279,9 +279,7 @@ const CoinifyWidget = ({
 
       return {
         recipientAddress: (coinifyContext.transferIn as any).details.account,
-        amount: new BigNumber(
-          coinifyContext.inAmount.toString(10),
-        ) as unknown as bigint, //#TODO fix this type properly
+        amount: new BigNumber(coinifyContext.inAmount),
         binaryPayload: Buffer.from(coinifyContext.providerSig.payload, "ascii"),
         signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
       };
@@ -315,7 +313,7 @@ const CoinifyWidget = ({
                   tradeId: tradeId.current,
                 },
               },
-              coinifyConfig.host,
+              coinifyConfig.host
             );
           }
           break;
@@ -336,7 +334,7 @@ const CoinifyWidget = ({
 
             if (currency) {
               console.log(
-                `Coinify Confirm Buy Start | currencyName: ${currency}`,
+                `Coinify Confirm Buy Start | currencyName: ${currency}`
               );
             }
           } else {
@@ -346,7 +344,7 @@ const CoinifyWidget = ({
         case "trade.trade-placed":
           if (currency) {
             console.log(
-              `Coinify Widget Event Trade Placed | currencyName: ${currency}`,
+              `Coinify Widget Event Trade Placed | currencyName: ${currency}`
             );
           }
           break;
