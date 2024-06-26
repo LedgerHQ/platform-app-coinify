@@ -63,7 +63,7 @@ type Props = {
   fiatAmount: string | null;
   language: string | null;
   primaryColor: string | null;
-  buySessionId: string;
+  buySessionId: string | null;
 };
 
 const CoinifyWidget = ({
