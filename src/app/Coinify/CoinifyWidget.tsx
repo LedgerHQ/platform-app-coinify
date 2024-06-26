@@ -44,7 +44,6 @@ type CoinifyWidgetConfig = {
   defaultFiatCurrency: string | null;
   address?: string | null;
   targetPage: string;
-  buySessionId: string | null;
   addressConfirmation?: boolean;
   transferConfirmation?: boolean;
   transferOutMedia?: string;
@@ -52,6 +51,7 @@ type CoinifyWidgetConfig = {
   confirmMessages?: boolean;
   buyAmount?: string | null;
   sellAmount?: string | null;
+  partnerContext?: string | null;
 };
 
 type Props = {
@@ -63,7 +63,7 @@ type Props = {
   fiatAmount: string | null;
   language: string | null;
   primaryColor: string | null;
-  buySessionId: string | null;
+  buySessionId: string;
 };
 
 const CoinifyWidget = ({
@@ -74,7 +74,7 @@ const CoinifyWidget = ({
   fiatAmount,
   cryptoAmount,
   primaryColor,
-  buySessionId = null,
+  buySessionId = "",
 }: Props) => {
   const api: ExchangeSDK = useApi();
 
@@ -84,7 +84,7 @@ const CoinifyWidget = ({
   const [widgetLoaded, setWidgetLoaded] = useState(false);
 
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
-
+  const partnerContext = { buySessionId };
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
     primaryColor,
@@ -93,7 +93,7 @@ const CoinifyWidget = ({
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : null,
     address: account.address,
     targetPage: mode,
-    buySessionId,
+    partnerContext: JSON.stringify(partnerContext),
   };
 
   // FIXME: could use switch case?
@@ -205,6 +205,7 @@ const CoinifyWidget = ({
             context: {
               address: account.address,
               confirmed: false,
+              buySessionId,
             },
           },
           coinifyConfig.host
@@ -223,7 +224,7 @@ const CoinifyWidget = ({
         );
       }
     }
-  }, [coinifyConfig.host, account, mode]);
+  }, [coinifyConfig.host, account, mode, buySessionId]);
 
   const setTransactionId = useCallback(
     (
