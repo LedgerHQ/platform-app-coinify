@@ -144,7 +144,9 @@ const CoinifyWidget = ({
           context: {
             address,
             confirmed: true,
-            buySessionId,
+            partnerContext: {
+              buySessionId,
+            },
           },
         },
         coinifyConfig.host
@@ -166,7 +168,9 @@ const CoinifyWidget = ({
             context: {
               address: account.address,
               confirmed: true,
-              buySessionId,
+              partnerContext: {
+                buySessionId,
+              },
             },
           },
           coinifyConfig.host
@@ -205,7 +209,9 @@ const CoinifyWidget = ({
             context: {
               address: account.address,
               confirmed: false,
-              buySessionId,
+              partnerContext: {
+                buySessionId,
+              },
             },
           },
           coinifyConfig.host
@@ -318,7 +324,9 @@ const CoinifyWidget = ({
                 context: {
                   confirmed: true,
                   tradeId: tradeId.current,
-                  buySessionId,
+                  partnerContext: {
+                    buySessionId,
+                  },
                 },
               },
               coinifyConfig.host
