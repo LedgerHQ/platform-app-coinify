@@ -71,18 +71,19 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
   const defaultMode = searchParams.get("mode") as Modes;
   const defaultFiatAmount = searchParams.get("fiatAmount");
   const defaultCryptoAmount = searchParams.get("cryptoAmount");
+  const buySessionId = searchParams.get("buySessionId");
 
   const api = useApi();
 
   const [selectedMode, setSelectedMode] = useState<Modes>(
-    defaultMode || "onRamp",
+    defaultMode || "onRamp"
   );
 
   const [selectedAccountId, setSelectedAccount] = useState<string | null>(
-    defaultAccountId,
+    defaultAccountId
   );
   const [selectedCurrencyId, setSelectedCurrency] = useState<string | null>(
-    defaultCryptoCurrencyId,
+    defaultCryptoCurrencyId
   );
 
   const selectedAccount = selectedAccountId
@@ -92,7 +93,7 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
   const selectedCurrency = selectedCurrencyId
     ? currencies.find(
         (currency) =>
-          currency.ticker.toLowerCase() === selectedCurrencyId.toLowerCase(),
+          currency.ticker.toLowerCase() === selectedCurrencyId.toLowerCase()
       )
     : undefined;
 
@@ -120,6 +121,7 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
     accounts,
     selectedAccount,
     selectedCurrency,
+    buySessionId,
   });
 
   const selectAccount = async () => {
@@ -188,6 +190,7 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
             cryptoAmount={defaultCryptoAmount}
             language={language}
             primaryColor={primaryColor}
+            buySessionId={buySessionId}
           />
         ) : (
           <>

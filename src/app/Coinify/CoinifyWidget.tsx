@@ -44,6 +44,7 @@ type CoinifyWidgetConfig = {
   defaultFiatCurrency: string | null;
   address?: string | null;
   targetPage: string;
+  buySessionId: string | null;
   addressConfirmation?: boolean;
   transferConfirmation?: boolean;
   transferOutMedia?: string;
@@ -62,6 +63,7 @@ type Props = {
   fiatAmount: string | null;
   language: string | null;
   primaryColor: string | null;
+  buySessionId: string | null;
 };
 
 const CoinifyWidget = ({
@@ -72,6 +74,7 @@ const CoinifyWidget = ({
   fiatAmount,
   cryptoAmount,
   primaryColor,
+  buySessionId = null,
 }: Props) => {
   const api: ExchangeSDK = useApi();
 
@@ -90,6 +93,7 @@ const CoinifyWidget = ({
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : null,
     address: account.address,
     targetPage: mode,
+    buySessionId,
   };
 
   // FIXME: could use switch case?
@@ -140,6 +144,7 @@ const CoinifyWidget = ({
           context: {
             address,
             confirmed: true,
+            buySessionId,
           },
         },
         coinifyConfig.host
@@ -148,7 +153,7 @@ const CoinifyWidget = ({
         console.log(`Coinify Confirm OnRamp End | currencyName: ${currency}`);
       }
     },
-    [coinifyConfig.host, currency, account, mode]
+    [coinifyConfig.host, currency, account, mode, buySessionId]
   );
 
   const handleOnResult = useCallback(() => {
@@ -161,6 +166,7 @@ const CoinifyWidget = ({
             context: {
               address: account.address,
               confirmed: true,
+              buySessionId,
             },
           },
           coinifyConfig.host
@@ -187,7 +193,7 @@ const CoinifyWidget = ({
         }
       }
     }
-  }, [coinifyConfig.host, currency, account, mode]);
+  }, [coinifyConfig.host, currency, account, mode, buySessionId]);
 
   const handleOnCancel = useCallback(() => {
     if (widgetRef?.current?.contentWindow) {
@@ -311,6 +317,7 @@ const CoinifyWidget = ({
                 context: {
                   confirmed: true,
                   tradeId: tradeId.current,
+                  buySessionId,
                 },
               },
               coinifyConfig.host
