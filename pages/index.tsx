@@ -15,6 +15,7 @@ type QueryParams = {
   mode?: "onRamp" | "offRamp";
   fiatAmount?: string;
   cryptoAmount?: string;
+  buySessionId?: string;
 };
 
 type PageState = {
@@ -56,6 +57,7 @@ const Page = () => {
     mode,
     fiatAmount,
     cryptoAmount,
+    buySessionId,
   } = router.query as QueryParams;
 
   if (state.data) {
@@ -69,6 +71,7 @@ const Page = () => {
         defaultFiatAmount={fiatAmount}
         language={language}
         primaryColor={primaryColor}
+        buySessionId={buySessionId}
         accounts={state.data.accounts}
         currencies={state.data.currencies}
       />

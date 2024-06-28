@@ -46,6 +46,7 @@ type CoinifyWidgetConfig = {
   confirmMessages?: boolean;
   buyAmount?: string;
   sellAmount?: string;
+  partnerContext?: string;
 };
 
 type Props = {
@@ -57,6 +58,7 @@ type Props = {
   fiatAmount?: string;
   language?: string;
   primaryColor?: string;
+  buySessionId?: string;
 };
 
 const CoinifyWidgetBuy = ({
@@ -67,6 +69,7 @@ const CoinifyWidgetBuy = ({
   fiatAmount,
   cryptoAmount,
   primaryColor,
+  buySessionId = "",
 }: Props) => {
   const api = useApi();
 
@@ -76,6 +79,7 @@ const CoinifyWidgetBuy = ({
   const [widgetLoaded, setWidgetLoaded] = useState(false);
 
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
+  const partnerContext = { buySessionId };
 
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
@@ -85,6 +89,7 @@ const CoinifyWidgetBuy = ({
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : undefined,
     address: accountAddress,
     targetPage: mode,
+    partnerContext: JSON.stringify(partnerContext),
   };
 
   // FIXME: could use switch case?
@@ -139,6 +144,9 @@ const CoinifyWidgetBuy = ({
           context: {
             address,
             confirmed: true,
+            partnerContext: {
+              buySessionId,
+            },
           },
         },
         coinifyConfig.host
@@ -147,7 +155,7 @@ const CoinifyWidgetBuy = ({
         console.log(`Coinify Confirm OnRamp End | currencyName: ${currency}`);
       }
     },
-    [coinifyConfig.host, currency, accountAddress, mode]
+    [coinifyConfig.host, currency, accountAddress, mode, buySessionId]
   );
 
   const handleOnResult = useCallback(() => {
@@ -160,6 +168,9 @@ const CoinifyWidgetBuy = ({
             context: {
               address: accountAddress,
               confirmed: true,
+              partnerContext: {
+                buySessionId,
+              },
             },
           },
           coinifyConfig.host
@@ -186,7 +197,7 @@ const CoinifyWidgetBuy = ({
         }
       }
     }
-  }, [coinifyConfig.host, currency, accountAddress, mode]);
+  }, [coinifyConfig.host, currency, accountAddress, mode, buySessionId]);
 
   const handleOnCancel = useCallback(() => {
     if (widgetRef?.current?.contentWindow) {
@@ -198,6 +209,9 @@ const CoinifyWidgetBuy = ({
             context: {
               address: accountAddress,
               confirmed: false,
+              partnerContext: {
+                buySessionId,
+              },
             },
           },
           coinifyConfig.host
@@ -216,7 +230,7 @@ const CoinifyWidgetBuy = ({
         );
       }
     }
-  }, [coinifyConfig.host, accountAddress, mode]);
+  }, [coinifyConfig.host, accountAddress, mode, buySessionId]);
 
   useEffect(() => {
     if (!accountAddress) return;
@@ -237,6 +251,9 @@ const CoinifyWidgetBuy = ({
                 context: {
                   confirmed: true,
                   tradeId: tradeId.current,
+                  partnerContext: {
+                    buySessionId,
+                  },
                 },
               },
               coinifyConfig.host
@@ -282,6 +299,7 @@ const CoinifyWidgetBuy = ({
     handleOnResultBuy,
     mode,
     api,
+    buySessionId,
   ]);
 
   return (

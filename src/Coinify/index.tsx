@@ -62,6 +62,7 @@ type CoinifyProps = {
   defaultCryptoAmount?: string;
   defaultFiatAmount?: string;
   language?: string;
+  buySessionId?: string;
   primaryColor?: string;
   currencies: Currency[];
   accounts: Account[];
@@ -78,6 +79,7 @@ const Coinify = ({
   accounts,
   language,
   primaryColor,
+  buySessionId,
 }: CoinifyProps) => {
   const api = useApi();
 
@@ -127,6 +129,7 @@ const Coinify = ({
     accounts,
     selectedAccount,
     selectedCurrency,
+    buySessionId,
   });
 
   const selectAccount = async () => {
@@ -190,6 +193,7 @@ const Coinify = ({
             cryptoAmount={defaultCryptoAmount}
             language={language}
             primaryColor={primaryColor}
+            buySessionId={buySessionId}
           />
         ) : (
           <>

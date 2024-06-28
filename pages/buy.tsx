@@ -12,6 +12,7 @@ type QueryParams = {
   mode?: "onRamp" | "offRamp";
   fiatAmount?: string;
   cryptoAmount?: string;
+  buySessionId?: string;
 };
 
 const Page = () => {
@@ -25,6 +26,7 @@ const Page = () => {
     primaryColor,
     fiatAmount,
     cryptoAmount,
+    buySessionId,
   } = router.query as QueryParams;
 
   if (accountAddress && cryptoCurrencyId) {
@@ -38,6 +40,7 @@ const Page = () => {
         cryptoAmount={cryptoAmount}
         language={language}
         primaryColor={primaryColor}
+        buySessionId={buySessionId}
       />
     );
   }
