@@ -379,6 +379,7 @@ const CoinifyWidget = ({
     initSellFlow,
     mode,
     api,
+    buySessionId,
   ]);
 
   return (
