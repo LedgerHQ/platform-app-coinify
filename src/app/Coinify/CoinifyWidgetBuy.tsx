@@ -299,6 +299,7 @@ const CoinifyWidgetBuy = ({
     handleOnResultBuy,
     mode,
     api,
+    buySessionId,
   ]);
 
   return (
