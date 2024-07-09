@@ -59,7 +59,8 @@
     "exchange.start",
     "exchange.complete",
     "custom.exchange.start",
-    "custom.exchange.complete"
+    "custom.exchange.complete",
+    "custom.exchange.error"
   ],
   "domains": ["http://", "https://"],
   "visibility": "complete"
