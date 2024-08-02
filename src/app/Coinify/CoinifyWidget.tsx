@@ -245,8 +245,10 @@ const CoinifyWidget = ({
     }> => {
       return new Promise((resolve) => {
         const onReply = (e: any) => {
-          if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data)
+          if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data) {
             return;
+          }
+
           const { type, event, context } = e.data;
 
           if (type === "event" && event === "trade.trade-created") {
@@ -289,11 +291,10 @@ const CoinifyWidget = ({
   const initSellFlow = useCallback(async () => {
     const getSellPayload = async (nonce: string) => {
       const coinifyContext = await setTransactionId(nonce);
-
       return {
         recipientAddress: (coinifyContext.transferIn as any).details.account,
         amount: new BigNumber(coinifyContext.inAmount),
-        binaryPayload: Buffer.from(coinifyContext.providerSig.payload, "ascii"),
+        binaryPayload: coinifyContext.providerSig.payload,
         signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
       };
     };
