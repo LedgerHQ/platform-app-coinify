@@ -232,17 +232,42 @@ const CoinifyWidget = ({
     }
   }, [coinifyConfig.host, account, mode, buySessionId]);
 
-  const setTransactionId = useCallback(
-    (
-      txId: string
-    ): Promise<{
-      inAmount: number;
-      transferIn: unknown;
-      providerSig: {
-        payload: string;
-        signature: string;
+  type CoinifyResponse = {
+    outCurrency: string;
+    inCurrency: string;
+    inAmount: number;
+    outAmountExpected: number;
+    trackingId: string;
+    transferIn: {
+      currency: string;
+      details: {
+        accountId: string;
+        paymentUri: string;
       };
-    }> => {
+      id: number;
+      medium: string;
+      receiveAmount: number;
+      sendAmount: number;
+    };
+    transferOut: {
+      currency: string;
+      details: {
+        accountId: string;
+        paymentUri: string;
+      };
+      id: number;
+      medium: string;
+      receiveAmount: number;
+      sendAmount: number;
+    };
+    providerSig: {
+      payload: string;
+      signature: string;
+    };
+  };
+
+  const setTransactionId = useCallback(
+    (txId: string): Promise<CoinifyResponse> => {
       return new Promise((resolve) => {
         const onReply = (e: any) => {
           if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data) {
@@ -291,11 +316,17 @@ const CoinifyWidget = ({
   const initSellFlow = useCallback(async () => {
     const getSellPayload = async (nonce: string) => {
       const coinifyContext = await setTransactionId(nonce);
+
       return {
         recipientAddress: (coinifyContext.transferIn as any).details.account,
         amount: new BigNumber(coinifyContext.inAmount),
         binaryPayload: coinifyContext.providerSig.payload,
         signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
+        beData: {
+          quoteId: coinifyContext.trackingId,
+          inAmount: coinifyContext.outAmountExpected,
+          outAmount: coinifyContext.inAmount,
+        },
       };
     };
     await api.sell({
