@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import * as Sentry from "@sentry/nextjs";
+
 import { ExchangeSDK } from "@ledgerhq/exchange-sdk";
 
 type LedgerLiveSDKContextType = {
@@ -44,7 +46,9 @@ export const useApi = (): ExchangeSDK => {
 
   // This should theoretically never happen
   if (!api) {
-    throw new Error("API not initialized");
+    const error = new Error("API not initialized");
+    Sentry.captureException(error);
+    throw error;
   }
 
   return api;

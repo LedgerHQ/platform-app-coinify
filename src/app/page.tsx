@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 import { Account, Currency } from "@ledgerhq/wallet-api-client";
 import Coinify from "./Coinify/Coinify";
@@ -31,6 +32,7 @@ const Page = () => {
         });
       })
       .catch((error) => {
+        Sentry.captureException(error);
         setState({ error, data: undefined });
       });
 
