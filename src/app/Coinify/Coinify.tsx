@@ -3,6 +3,7 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 import styled from "styled-components";
 
@@ -144,6 +145,7 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
             : SELECTABLE_CURRENCIES_OFFRAMP,
       })
       .catch((error) => {
+        Sentry.captureException(error);
         console.error({ error });
         return undefined;
       });

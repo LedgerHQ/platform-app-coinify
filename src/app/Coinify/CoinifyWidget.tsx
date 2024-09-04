@@ -3,12 +3,15 @@
 // @flow
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import * as Sentry from "@sentry/nextjs";
+
 import styled from "styled-components";
 import querystring from "querystring";
 import type { Account } from "@ledgerhq/wallet-api-client";
 import { ExchangeSDK } from "@ledgerhq/exchange-sdk";
 import BigNumber from "bignumber.js";
 import { useApi } from "../Providers/LedgerLiveSDKProvider";
+import { GetSellPayload } from "@ledgerhq/exchange-sdk/dist/types/sdk";
 
 type CoinifyConfig = {
   host: string;
@@ -287,22 +290,31 @@ const CoinifyWidget = ({
   );
 
   const initSellFlow = useCallback(async () => {
-    const getSellPayload = async (nonce: string) => {
+    const getSellPayload: GetSellPayload = async (nonce: string) => {
       const coinifyContext = await setTransactionId(nonce);
 
       return {
         recipientAddress: (coinifyContext.transferIn as any).details.account,
         amount: new BigNumber(coinifyContext.inAmount),
-        binaryPayload: Buffer.from(coinifyContext.providerSig.payload, "ascii"),
+        binaryPayload: Buffer.from(
+          coinifyContext.providerSig.payload,
+          "ascii"
+        ) as unknown as string,
         signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
       };
     };
-    await api.sell({
-      accountId: account.id,
-      amount: new BigNumber(0),
-      feeStrategy: "MEDIUM",
-      getSellPayload,
-    });
+
+    try {
+      await api.sell({
+        accountId: account.id,
+        amount: new BigNumber(0),
+        feeStrategy: "MEDIUM",
+        getSellPayload,
+      });
+    } catch (error) {
+      Sentry.captureException(error);
+      console.error(error);
+    }
   }, [account.id, api, setTransactionId]);
 
   useEffect(() => {
@@ -346,7 +358,10 @@ const CoinifyWidget = ({
             api.walletAPI.account
               .receive(account.id)
               .then((verifiedAddress) => handleOnResultBuy(verifiedAddress))
-              .catch((error: unknown) => console.error(error));
+              .catch((error: unknown) => {
+                Sentry.captureException(error);
+                console.error(error);
+              });
 
             if (currency) {
               console.log(
