@@ -1,24 +1,10 @@
+"use client";
 // @flow
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { BigNumber } from "bignumber.js";
 import styled from "styled-components";
 import querystring from "querystring";
-import {
-  BitcoinTransaction,
-  ExchangeType,
-  FAMILIES,
-  FeesLevel,
-} from "@ledgerhq/live-app-sdk";
-import type { Account, Unit } from "@ledgerhq/live-app-sdk";
-import { useApi } from "../providers/LedgerLiveSDKProvider";
-
-const parseCurrencyUnit = (unit: Unit, valueString: string): BigNumber => {
-  const str = valueString.replace(/,/g, ".");
-  const value = new BigNumber(str);
-  if (value.isNaN()) return new BigNumber(0);
-  return value.times(new BigNumber(10).pow(unit.magnitude)).integerValue();
-};
+import { useApi } from "../Providers/LedgerLiveSDKProvider";
 
 type CoinifyConfig = {
   host: string;
@@ -48,7 +34,7 @@ const CustomIframe = styled.iframe`
 `;
 
 type CoinifyWidgetConfig = {
-  primaryColor?: string;
+  primaryColor: string | null;
   partnerId: string;
   cryptoCurrencies?: string | null;
   defaultFiatCurrency?: string;
@@ -59,29 +45,32 @@ type CoinifyWidgetConfig = {
   transferOutMedia?: string;
   transferInMedia?: string;
   confirmMessages?: boolean;
-  buyAmount?: string;
-  sellAmount?: string;
+  buyAmount?: string | null;
+  sellAmount?: string | null;
+  partnerContext?: string | null;
 };
 
 type Props = {
-  account: Account;
+  accountAddress: string | null;
   currency: string;
-  fiatCurrencyId?: string;
+  fiatCurrencyId: string | null;
   mode: "onRamp" | "offRamp" | "history";
-  cryptoAmount?: string;
-  fiatAmount?: string;
-  language?: string;
-  primaryColor?: string;
+  cryptoAmount: string | null;
+  fiatAmount: string | null;
+  language: string | null;
+  primaryColor: string | null;
+  buySessionId: string | null;
 };
 
-const CoinifyWidget = ({
-  account,
+const CoinifyWidgetBuy = ({
+  accountAddress,
   currency,
   fiatCurrencyId,
   mode,
   fiatAmount,
   cryptoAmount,
   primaryColor,
+  buySessionId = "",
 }: Props) => {
   const api = useApi();
 
@@ -91,15 +80,16 @@ const CoinifyWidget = ({
   const [widgetLoaded, setWidgetLoaded] = useState(false);
 
   const widgetRef: { current: null | HTMLIFrameElement } = useRef(null);
-
+  const partnerContext = { buySessionId };
   const coinifyConfig = COINIFY_CONFIG[env];
   const widgetConfig: CoinifyWidgetConfig = {
     primaryColor,
     partnerId: coinifyConfig.partnerId,
     cryptoCurrencies: currency ? currency : null,
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : undefined,
-    address: account.address,
+    address: accountAddress,
     targetPage: mode,
+    partnerContext: JSON.stringify(partnerContext),
   };
 
   // FIXME: could use switch case?
@@ -124,22 +114,26 @@ const CoinifyWidget = ({
 
   useEffect(() => {
     if (!currency) return;
-    if (mode === "onRamp" && account) {
+    if (mode === "onRamp" && accountAddress) {
       console.log(`Coinify Start OnRamp Widget | currencyName: ${currency}`);
     }
-    if (mode === "offRamp" && account) {
+    if (mode === "offRamp" && accountAddress) {
       console.log(`Coinify Start OffRamp Widget | currencyName: ${currency}`);
     }
     if (mode === "history") {
       console.log("Coinify Start History Widget");
     }
-  }, [account, currency, mode]);
+  }, [accountAddress, currency, mode]);
 
   const url = `${coinifyConfig.url}?${querystring.stringify(widgetConfig)}`;
 
   const handleOnResultBuy = useCallback(
     (address: string) => {
-      if (!widgetRef?.current?.contentWindow || !account || mode !== "onRamp") {
+      if (
+        !widgetRef?.current?.contentWindow ||
+        !accountAddress ||
+        mode !== "onRamp"
+      ) {
         return;
       }
 
@@ -150,6 +144,9 @@ const CoinifyWidget = ({
           context: {
             address,
             confirmed: true,
+            partnerContext: {
+              buySessionId,
+            },
           },
         },
         coinifyConfig.host
@@ -158,19 +155,22 @@ const CoinifyWidget = ({
         console.log(`Coinify Confirm OnRamp End | currencyName: ${currency}`);
       }
     },
-    [coinifyConfig.host, currency, account, mode]
+    [coinifyConfig.host, currency, accountAddress, mode, buySessionId]
   );
 
   const handleOnResult = useCallback(() => {
     if (widgetRef?.current?.contentWindow) {
-      if (account && mode === "onRamp") {
+      if (accountAddress && mode === "onRamp") {
         widgetRef.current.contentWindow.postMessage(
           {
             type: "event",
             event: "trade.confirm-trade-prepared",
             context: {
-              address: account.address,
+              address: accountAddress,
               confirmed: true,
+              partnerContext: {
+                buySessionId,
+              },
             },
           },
           coinifyConfig.host
@@ -197,18 +197,21 @@ const CoinifyWidget = ({
         }
       }
     }
-  }, [coinifyConfig.host, currency, account, mode]);
+  }, [coinifyConfig.host, currency, accountAddress, mode, buySessionId]);
 
   const handleOnCancel = useCallback(() => {
     if (widgetRef?.current?.contentWindow) {
-      if (mode === "onRamp" && account) {
+      if (mode === "onRamp" && accountAddress) {
         widgetRef.current.contentWindow.postMessage(
           {
             type: "event",
             event: "trade.confirm-trade-prepared",
             context: {
-              address: account.address,
+              address: accountAddress,
               confirmed: false,
+              partnerContext: {
+                buySessionId,
+              },
             },
           },
           coinifyConfig.host
@@ -227,96 +230,10 @@ const CoinifyWidget = ({
         );
       }
     }
-  }, [coinifyConfig.host, account, mode]);
-
-  const setTransactionId = useCallback(
-    (txId) => {
-      return new Promise((resolve) => {
-        const onReply = (e: any) => {
-          if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data)
-            return;
-          const { type, event, context } = e.data;
-
-          if (type === "event" && event === "trade.trade-created") {
-            resolve(context);
-          }
-        };
-        window.addEventListener("message", onReply, { once: true });
-        if (widgetRef.current?.contentWindow) {
-          widgetRef.current.contentWindow.postMessage(
-            {
-              type: "event",
-              event: "settings.partner-context-changed",
-              context: {
-                partnerContext: {
-                  nonce: txId,
-                },
-              },
-            },
-            coinifyConfig.host
-          );
-        }
-        if (widgetRef.current?.contentWindow) {
-          widgetRef.current.contentWindow.postMessage(
-            {
-              type: "event",
-              event: "trade.confirm-trade-prepared",
-              context: {
-                confirmed: true,
-              },
-            },
-            coinifyConfig.host
-          );
-        }
-      });
-    },
-    [coinifyConfig]
-  );
-
-  const initSellFlow = useCallback(async () => {
-    const nonce = await api
-      .startExchange({
-        exchangeType: ExchangeType.SELL,
-      })
-      .catch((e) => {
-        throw e;
-      });
-
-    const coinifyContext: any = await setTransactionId(nonce);
-
-    const tx: BitcoinTransaction = {
-      family: FAMILIES.BITCOIN,
-      amount: parseCurrencyUnit(
-        {
-          magnitude: 8,
-          name: "bitcoin",
-          code: "BTC",
-        },
-        coinifyContext.inAmount.toString(10)
-      ),
-      recipient: coinifyContext.transferIn.details.account,
-    };
-
-    const signedTx = await api
-      .completeExchange({
-        provider: "coinify",
-        fromAccountId: account.id,
-        transaction: tx,
-        binaryPayload: Buffer.from(coinifyContext.providerSig.payload, "ascii"),
-        signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
-        feesStrategy: FeesLevel.Medium,
-        exchangeType: ExchangeType.SELL,
-      })
-      .catch((e) => {
-        throw e;
-      });
-
-    // signedTx is not actually used by the widget
-    return signedTx;
-  }, [account.id, api, setTransactionId]);
+  }, [coinifyConfig.host, accountAddress, mode, buySessionId]);
 
   useEffect(() => {
-    if (!account) return;
+    if (!accountAddress) return;
 
     function onMessage(e: any) {
       if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data) return;
@@ -334,6 +251,9 @@ const CoinifyWidget = ({
                 context: {
                   confirmed: true,
                   tradeId: tradeId.current,
+                  partnerContext: {
+                    buySessionId,
+                  },
                 },
               },
               coinifyConfig.host
@@ -341,19 +261,13 @@ const CoinifyWidget = ({
           }
           break;
         case "trade.trade-prepared":
-          if (mode === "offRamp" && currency) {
-            initSellFlow().then(handleOnResult).catch(handleOnCancel);
-          }
           break;
         case "trade.receive-account-changed":
-          if (account && context.address === account.address) {
+          if (accountAddress && context.address === accountAddress) {
             // FIXME: VERIFY ADDRESS
 
             // FIXME: handle cancel / error
-            api
-              .receive(account.id)
-              .then((verifiedAddress) => handleOnResultBuy(verifiedAddress))
-              .catch((error: unknown) => console.error(error));
+            handleOnResultBuy(accountAddress);
 
             if (currency) {
               console.log(
@@ -377,15 +291,15 @@ const CoinifyWidget = ({
     window.addEventListener("message", onMessage, false);
     return () => window.removeEventListener("message", onMessage, false);
   }, [
-    account,
+    accountAddress,
     coinifyConfig,
     currency,
     handleOnCancel,
     handleOnResult,
     handleOnResultBuy,
-    initSellFlow,
     mode,
     api,
+    buySessionId,
   ]);
 
   return (
@@ -399,4 +313,4 @@ const CoinifyWidget = ({
   );
 };
 
-export default CoinifyWidget;
+export default CoinifyWidgetBuy;
