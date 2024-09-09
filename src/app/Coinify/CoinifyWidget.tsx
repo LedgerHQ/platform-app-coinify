@@ -329,6 +329,7 @@ const CoinifyWidget = ({
         },
       };
     };
+
     await api.sell({
       accountId: account.id,
       amount: new BigNumber(0),
