@@ -15,6 +15,8 @@ const Page = () => {
   const fiatAmount = searchParams.get("fiatAmount");
   const cryptoAmount = searchParams.get("cryptoAmount");
   const buySessionId = searchParams.get("buySessionId");
+  const transferOutMedia = searchParams.get("transferOutMedia");
+  const transferInMedia = searchParams.get("transferInMedia");
 
   if (accountAddress && cryptoCurrencyId) {
     return (
@@ -28,6 +30,8 @@ const Page = () => {
         language={language}
         primaryColor={primaryColor}
         buySessionId={buySessionId}
+        transferOutMedia={transferOutMedia}
+        transferInMedia={transferInMedia}
       />
     );
   }
