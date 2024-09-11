@@ -49,8 +49,8 @@ type CoinifyWidgetConfig = {
   targetPage: string;
   addressConfirmation?: boolean;
   transferConfirmation?: boolean;
-  transferOutMedia?: string;
-  transferInMedia?: string;
+  transferOutMedia?: string | null;
+  transferInMedia?: string | null;
   confirmMessages?: boolean;
   buyAmount?: string | null;
   sellAmount?: string | null;
@@ -67,6 +67,8 @@ type Props = {
   language: string | null;
   primaryColor: string | null;
   buySessionId: string | null;
+  transferInMedia: string | null;
+  transferOutMedia: string | null;
 };
 
 const CoinifyWidget = ({
@@ -77,6 +79,8 @@ const CoinifyWidget = ({
   fiatAmount,
   cryptoAmount,
   primaryColor,
+  transferInMedia,
+  transferOutMedia,
   buySessionId = "",
 }: Props) => {
   const api: ExchangeSDK = useApi();
@@ -101,7 +105,8 @@ const CoinifyWidget = ({
 
   // FIXME: could use switch case?
   if (mode === "onRamp") {
-    widgetConfig.transferOutMedia = "blockchain";
+    widgetConfig.transferOutMedia = transferOutMedia;
+    widgetConfig.transferInMedia = transferInMedia;
     widgetConfig.confirmMessages = true;
     widgetConfig.buyAmount = fiatAmount;
     widgetConfig.sellAmount = cryptoAmount;
