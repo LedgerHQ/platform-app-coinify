@@ -73,6 +73,8 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
   const defaultFiatAmount = searchParams.get("fiatAmount");
   const defaultCryptoAmount = searchParams.get("cryptoAmount");
   const buySessionId = searchParams.get("buySessionId");
+  const transferOutMedia = searchParams.get("transferOutMedia");
+  const transferInMedia = searchParams.get("transferInMedia");
 
   const api = useApi();
 
@@ -193,6 +195,8 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
             language={language}
             primaryColor={primaryColor}
             buySessionId={buySessionId}
+            transferOutMedia={transferOutMedia}
+            transferInMedia={transferInMedia}
           />
         ) : (
           <>
