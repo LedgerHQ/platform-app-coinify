@@ -335,8 +335,8 @@ const CoinifyWidget = ({
 
     try {
       await api.sell({
-        accountId: account.id,
-        amount: new BigNumber(0),
+        fromAccountId: account.id,
+        fromAmount: new BigNumber(0),
         feeStrategy: "MEDIUM",
         getSellPayload,
       });
