@@ -47,6 +47,7 @@ type CoinifyWidgetConfig = {
   defaultFiatCurrency: string | null;
   address?: string | null;
   targetPage: string;
+  isBuyAmountWithFees?: true;
   addressConfirmation?: boolean;
   transferConfirmation?: boolean;
   transferOutMedia?: string | null;
@@ -110,6 +111,7 @@ const CoinifyWidget = ({
     widgetConfig.confirmMessages = true;
     widgetConfig.buyAmount = fiatAmount;
     widgetConfig.sellAmount = cryptoAmount;
+    widgetConfig.isBuyAmountWithFees = true;
   }
 
   if (mode === "offRamp") {
