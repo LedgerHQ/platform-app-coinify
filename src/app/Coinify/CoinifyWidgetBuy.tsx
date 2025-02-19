@@ -40,7 +40,7 @@ type CoinifyWidgetConfig = {
   defaultFiatCurrency?: string;
   address?: string | null;
   targetPage: string;
-  isBuyAmountWithFees?: true;
+  isBuyAmountWithFees?: boolean;
   addressConfirmation?: boolean;
   transferConfirmation?: boolean;
   transferOutMedia?: string | null;
