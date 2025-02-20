@@ -20,7 +20,7 @@ const LedgerLiveSDKProvider = ({
   const [api, setApi] = useState<ExchangeSDK | null>(null);
 
   useEffect(() => {
-    const llapi = new ExchangeSDK("coinify", undefined, undefined, "https://buy.api.aws.ppr.ldg-tech.com/sell/v1");
+    const llapi = new ExchangeSDK("coinify");
 
     setApi(llapi);
 
