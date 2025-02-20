@@ -71,95 +71,6 @@ type Props = {
   transferOutMedia: string | null;
 };
 
-interface CoinifyContext {
-  id: number;
-  trackingId: string;
-  state: string;
-  traderId: number;
-  traderEmail: string;
-  inAmount: number;
-  inCurrency: string;
-  outCurrency: string;
-  outAmountExpected: number;
-  transferIn: TransferIn;
-  transferOut: TransferOut;
-  createTime: string; // ISO 8601 timestamp
-  updateTime: string; // ISO 8601 timestamp
-  isPriceQuoteApproximate: boolean;
-  quoteExpireTime: string; // ISO 8601 timestamp
-  providerSig: ProviderSignature;
-  partnerContext: PartnerContext;
-}
-
-interface TransferIn {
-  id: number;
-  sendAmount: number;
-  receiveAmount: number;
-  currency: string;
-  medium: string;
-  details: TransferInDetails;
-}
-
-interface TransferInDetails {
-  account: string;
-  paymentUri: string;
-}
-
-interface TransferOut {
-  id: number;
-  sendAmount: number;
-  receiveAmount: number;
-  currency: string;
-  medium: string;
-  details: TransferOutDetails;
-  mediumReceiveAccountId: number;
-}
-
-interface TransferOutDetails {
-  account: BankAccount;
-  bank: BankDetails;
-  holder: HolderDetails;
-}
-
-interface BankAccount {
-  bic: string;
-  currency: string;
-  number: string;
-}
-
-interface BankDetails {
-  address: Address;
-  name: string | null;
-}
-
-interface HolderDetails {
-  address: Address;
-  name: string;
-}
-
-interface Address {
-  city?: string;
-  country: string;
-  state?: string | null;
-  street?: string;
-  zipcode?: string;
-}
-
-interface ProviderSignature {
-  payload: string;
-  header: SignatureHeader;
-  signature: string;
-}
-
-interface SignatureHeader {
-  alg: string;
-  kid: string;
-}
-
-interface PartnerContext {
-  nonce: string;
-}
-
 const CoinifyWidget = ({
   account,
   currency,
@@ -332,7 +243,14 @@ const CoinifyWidget = ({
   const setTransactionId = useCallback(
     (
       txId: string
-    ): Promise<CoinifyContext> => {
+    ): Promise<{
+      inAmount: number;
+      transferIn: unknown;
+      providerSig: {
+        payload: string;
+        signature: string;
+      };
+    }> => {
       return new Promise((resolve) => {
         const onReply = (e: any) => {
           if (!e.isTrusted || e.origin !== coinifyConfig.host || !e.data)
