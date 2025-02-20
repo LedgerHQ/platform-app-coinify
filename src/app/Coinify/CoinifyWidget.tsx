@@ -384,11 +384,7 @@ const CoinifyWidget = ({
         recipientAddress: (coinifyContext.transferIn as any).details.account,
         amount: new BigNumber(coinifyContext.inAmount),
         binaryPayload: coinifyContext.providerSig.payload,
-        signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
-        beData: {
-          inAmount: coinifyContext.inAmount,
-          outAmount: coinifyContext.outAmountExpected,
-        }
+        signature: Buffer.from(coinifyContext.providerSig.signature, "base64")
       };
     };
     try {
