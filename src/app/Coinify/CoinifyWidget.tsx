@@ -11,7 +11,7 @@ import type { Account } from "@ledgerhq/wallet-api-client";
 import { ExchangeSDK } from "@ledgerhq/exchange-sdk";
 import BigNumber from "bignumber.js";
 import { useApi } from "../Providers/LedgerLiveSDKProvider";
-import { GetSellPayload } from "@ledgerhq/exchange-sdk/dist/types/sdk";
+import { GetSellPayload } from "@ledgerhq/exchange-sdk/dist/types/sdk.types";
 
 type CoinifyConfig = {
   host: string;
@@ -296,26 +296,23 @@ const CoinifyWidget = ({
     [coinifyConfig]
   );
 
-  const initSellFlow = useCallback(async () => {
+  const initSellFlow = useCallback(async ({ rate }: { rate: number }) => {
     const getSellPayload: GetSellPayload = async (nonce: string) => {
       const coinifyContext = await setTransactionId(nonce);
 
       return {
         recipientAddress: (coinifyContext.transferIn as any).details.account,
         amount: new BigNumber(coinifyContext.inAmount),
-        binaryPayload: Buffer.from(
-          coinifyContext.providerSig.payload,
-          "ascii"
-        ) as unknown as string,
-        signature: Buffer.from(coinifyContext.providerSig.signature, "base64"),
+        binaryPayload: coinifyContext.providerSig.payload,
+        signature: Buffer.from(coinifyContext.providerSig.signature, "base64")
       };
     };
-
     try {
       await api.sell({
-        accountId: account.id,
-        amount: new BigNumber(0),
-        feeStrategy: "MEDIUM",
+        fromAccountId: account.id,
+        fromAmount: new BigNumber(0),
+        feeStrategy: "medium",
+        rate,
         getSellPayload,
       });
     } catch (error) {
@@ -354,7 +351,7 @@ const CoinifyWidget = ({
           break;
         case "trade.trade-prepared":
           if (mode === "offRamp" && currency) {
-            initSellFlow().then(handleOnResult).catch(handleOnCancel);
+            initSellFlow({ rate: context.quoteAmount / context.baseAmount }).then(handleOnResult).catch(handleOnCancel);
           }
           break;
         case "trade.receive-account-changed":
