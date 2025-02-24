@@ -14,7 +14,7 @@
   "dependencies": {
     "@babel/core": "^7.24.5",
     "@emotion/is-prop-valid": "^1.2.2",
-    "@ledgerhq/exchange-sdk": "^0.7.7",
+    "@ledgerhq/exchange-sdk": "^1.1.0",
     "@ledgerhq/react-ui": "^0.14.18",
     "@ledgerhq/wallet-api-client": "^1.5.9",
     "@ledgerhq/wallet-api-exchange-module": "^0.6.0",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/color": "^3.0.6",
-    "@types/node": "^20.12.12",
+    "@types/node": "^22.5.4",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "@types/styled-components": "^5.1.34",
