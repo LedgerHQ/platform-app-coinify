@@ -626,10 +626,10 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.19.1.tgz#d9ac45ad4ff839e468b8f63766e665537aaede58"
   integrity sha512-75yK7Nnit/Gp7gdrJAz0ipp31CCgncRp+evWt6QawQEtQKYEDfGo10QywgrrBBixeRxwnMy1DP6g2oCWRf1bjw==
 
-"@ledgerhq/exchange-sdk@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/exchange-sdk/-/exchange-sdk-1.4.1.tgz#3ae3a093b960ed66ec5810e1869dad21d5e18b42"
-  integrity sha512-gvKu4mXYXxI2kUsMaPpJ3ImQEtuP9FMWp5xFiCjPOD+CHQwSF7PpUcBOZiJJq0pRA/CLMr1TuNZ8Bplhju1QzA==
+"@ledgerhq/exchange-sdk@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/exchange-sdk/-/exchange-sdk-1.4.2.tgz#40714cc8678eec05f6ee948ab9b914cb19aaac8f"
+  integrity sha512-vUB8uUc9JaDmbpMNX13lL3s+bmunFCS/Q2cabcO8SLQWYo3uMGk11P/uAnpdvKMb5q7yJ5JzEWCq5o6zMgY62g==
   dependencies:
     "@ledgerhq/hw-app-exchange" "0.7.0"
     axios "^1.3.4"
