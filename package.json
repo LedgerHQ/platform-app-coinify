@@ -14,7 +14,7 @@
   "dependencies": {
     "@babel/core": "^7.24.5",
     "@emotion/is-prop-valid": "^1.2.2",
-    "@ledgerhq/exchange-sdk": "^1.4.1",
+    "@ledgerhq/exchange-sdk": "^1.4.2",
     "@ledgerhq/react-ui": "^0.14.18",
     "@ledgerhq/wallet-api-client": "^1.5.9",
     "@ledgerhq/wallet-api-exchange-module": "^0.6.0",
