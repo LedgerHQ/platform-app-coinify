@@ -55,6 +55,7 @@ type CoinifyWidgetConfig = {
   confirmMessages?: boolean;
   buyAmount?: string | null;
   sellAmount?: string | null;
+  topLevelDomain?: string;
   partnerContext?: string | null;
 };
 
@@ -101,6 +102,7 @@ const CoinifyWidget = ({
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : null,
     address: account.address,
     targetPage: mode,
+    topLevelDomain: coinifyConfig.host.replace("https://", ""),
     partnerContext: JSON.stringify(partnerContext),
   };
 
@@ -296,30 +298,36 @@ const CoinifyWidget = ({
     [coinifyConfig]
   );
 
-  const initSellFlow = useCallback(async ({ rate }: { rate: number }) => {
-    const getSellPayload: GetSellPayload = async (nonce: string) => {
-      const coinifyContext = await setTransactionId(nonce);
+  const initSellFlow = useCallback(
+    async ({ rate }: { rate: number }) => {
+      const getSellPayload: GetSellPayload = async (nonce: string) => {
+        const coinifyContext = await setTransactionId(nonce);
 
-      return {
-        recipientAddress: (coinifyContext.transferIn as any).details.account,
-        amount: new BigNumber(coinifyContext.inAmount),
-        binaryPayload: coinifyContext.providerSig.payload,
-        signature: Buffer.from(coinifyContext.providerSig.signature, "base64")
+        return {
+          recipientAddress: (coinifyContext.transferIn as any).details.account,
+          amount: new BigNumber(coinifyContext.inAmount),
+          binaryPayload: coinifyContext.providerSig.payload,
+          signature: Buffer.from(
+            coinifyContext.providerSig.signature,
+            "base64"
+          ),
+        };
       };
-    };
-    try {
-      await api.sell({
-        fromAccountId: account.id,
-        fromAmount: new BigNumber(0),
-        feeStrategy: "medium",
-        rate,
-        getSellPayload,
-      });
-    } catch (error) {
-      Sentry.captureException(error);
-      console.error(error);
-    }
-  }, [account.id, api, setTransactionId]);
+      try {
+        await api.sell({
+          fromAccountId: account.id,
+          fromAmount: new BigNumber(0),
+          feeStrategy: "medium",
+          rate,
+          getSellPayload,
+        });
+      } catch (error) {
+        Sentry.captureException(error);
+        console.error(error);
+      }
+    },
+    [account.id, api, setTransactionId]
+  );
 
   useEffect(() => {
     if (!account) return;
@@ -351,7 +359,9 @@ const CoinifyWidget = ({
           break;
         case "trade.trade-prepared":
           if (mode === "offRamp" && currency) {
-            initSellFlow({ rate: context.quoteAmount / context.baseAmount }).then(handleOnResult).catch(handleOnCancel);
+            initSellFlow({ rate: context.quoteAmount / context.baseAmount })
+              .then(handleOnResult)
+              .catch(handleOnCancel);
           }
           break;
         case "trade.receive-account-changed":
@@ -407,7 +417,7 @@ const CoinifyWidget = ({
       ref={widgetRef}
       style={{ opacity: widgetLoaded ? 1 : 0 }}
       onLoad={() => setTimeout(() => setWidgetLoaded(true), 500)}
-      allow="camera"
+      allow="camera;payment"
     />
   );
 };

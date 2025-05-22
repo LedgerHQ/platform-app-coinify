@@ -48,6 +48,7 @@ type CoinifyWidgetConfig = {
   confirmMessages?: boolean;
   buyAmount?: string | null;
   sellAmount?: string | null;
+  topLevelDomain?: string;
   partnerContext?: string | null;
 };
 
@@ -94,6 +95,7 @@ const CoinifyWidgetBuy = ({
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : undefined,
     address: accountAddress,
     targetPage: mode,
+    topLevelDomain: coinifyConfig.host.replace("https://", ""),
     partnerContext: JSON.stringify(partnerContext),
   };
 
@@ -315,7 +317,7 @@ const CoinifyWidgetBuy = ({
       ref={widgetRef}
       style={{ opacity: widgetLoaded ? 1 : 0 }}
       onLoad={() => setTimeout(() => setWidgetLoaded(true), 500)}
-      allow="camera"
+      allow="camera;payment"
     />
   );
 };
