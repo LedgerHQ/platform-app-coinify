@@ -14,6 +14,7 @@ import { useApi } from "../Providers/LedgerLiveSDKProvider";
 import { GetSellPayload } from "@ledgerhq/exchange-sdk/dist/types/sdk.types";
 
 type CoinifyConfig = {
+  webviewHost: string;
   host: string;
   url: string;
   partnerId: string;
@@ -21,11 +22,13 @@ type CoinifyConfig = {
 
 const COINIFY_CONFIG: { [key: string]: CoinifyConfig } = {
   sandbox: {
+    webviewHost: "https://platform-app-coinify-staging.vercel.app/?env=sandbox",
     host: "https://trade-ui.sandbox.coinify.com",
     url: "https://trade-ui.sandbox.coinify.com/widget",
     partnerId: "191f0c7f-076d-459f-bf2d-833465bfadc2",
   },
   prod: {
+    webviewHost: "https://platform-app-coinify.vercel.app",
     host: "https://trade-ui.coinify.com",
     url: "https://trade-ui.coinify.com/widget",
     partnerId: "191f0c7f-076d-459f-bf2d-833465bfadc2",
@@ -102,7 +105,7 @@ const CoinifyWidget = ({
     defaultFiatCurrency: fiatCurrencyId ? fiatCurrencyId : null,
     address: account.address,
     targetPage: mode,
-    topLevelDomain: coinifyConfig.host.replace("https://", ""),
+    topLevelDomain: coinifyConfig.webviewHost.replace("https://", ""),
     partnerContext: JSON.stringify(partnerContext),
   };
 
