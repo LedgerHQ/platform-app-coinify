@@ -135,7 +135,9 @@ const Coinify = ({ currencies, accounts }: CoinifyProps) => {
     let SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin"];
     const env =
       new URLSearchParams(window.location.search).get("env") || "prod";
+
     if (env && env === "sandbox") {
+      SELECTABLE_CURRENCIES_ONRAMP.push("bitcoin_testnet");
       SELECTABLE_CURRENCIES_OFFRAMP = ["bitcoin_testnet"];
     }
     const account = await api.walletAPI.account
