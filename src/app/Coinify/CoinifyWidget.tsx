@@ -22,7 +22,7 @@ type CoinifyConfig = {
 
 const COINIFY_CONFIG: { [key: string]: CoinifyConfig } = {
   sandbox: {
-    webviewHost: "https://platform-app-coinify-staging.vercel.app/?env=sandbox",
+    webviewHost: "https://platform-app-coinify-staging.vercel.app",
     host: "https://trade-ui.sandbox.coinify.com",
     url: "https://trade-ui.sandbox.coinify.com/widget",
     partnerId: "191f0c7f-076d-459f-bf2d-833465bfadc2",
